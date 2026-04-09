@@ -540,11 +540,18 @@ body {
         </svg>
       </div>
       <div class="form-header">
-        <h1>Welcome back!</h1>
-        <p>Please enter your details</p>
+        <h1>Create account</h1>
+        <p>Start your journey with us</p>
       </div>
 
-      <form id="login-form" onsubmit="return false;">
+      <form id="register-form" onsubmit="return false;">
+        <div class="form-group">
+          <label id="username-label" for="username">Username</label>
+          <div class="input-wrapper">
+            <input type="text" id="username" placeholder="Choose a username" autocomplete="off" />
+          </div>
+        </div>
+
         <div class="form-group">
           <label id="email-label" for="email">Email</label>
           <div class="input-wrapper">
@@ -569,19 +576,29 @@ body {
           </div>
         </div>
 
-        <div class="form-options">
-          <label class="remember-me">
-            <input type="checkbox" checked /> Remember for 30 days
-          </label>
-          <a href="#" class="forgot-link">Forgot password?</a>
+        <div class="form-group">
+          <label id="confirm-password-label" for="confirm-password">Confirm Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="confirm-password" placeholder="••••••••" />
+            <button type="button" class="toggle-password" id="toggle-confirm-password">
+              <svg id="confirm-eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg id="confirm-eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div class="error-msg" id="error-msg"></div>
 
-        <button type="submit" class="btn-login" id="btn-login">
-          <span class="btn-text">Log In</span>
+        <button type="submit" class="btn-login" id="btn-register">
+          <span class="btn-text">Sign Up</span>
           <div class="btn-hover-content">
-            <span>Log In</span>
+            <span>Sign Up</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </div>
         </button>
@@ -589,7 +606,7 @@ body {
       </form>
 
       <div class="signup-link">
-        Don't have an account? <a href="/auth/register">Sign Up</a>
+        Already have an account? <a href="/auth/login">Log In</a>
       </div>
     </div>
   </div>
@@ -598,11 +615,17 @@ body {
 <script>
 // ============ PASSWORD TOGGLE ============
 const passwordInput = document.getElementById('password');
+const confirmPasswordInput = document.getElementById('confirm-password');
 const emailInput = document.getElementById('email');
+const usernameInput = document.getElementById('username');
 const toggleBtn = document.getElementById('toggle-password');
 const eyeIcon = document.getElementById('eye-icon');
 const eyeOffIcon = document.getElementById('eye-off-icon');
+const toggleConfirmBtn = document.getElementById('toggle-confirm-password');
+const confirmEyeIcon = document.getElementById('confirm-eye-icon');
+const confirmEyeOffIcon = document.getElementById('confirm-eye-off-icon');
 let showPassword = false;
+let showConfirmPassword = false;
 let isLoginError = false;
 
 toggleBtn.addEventListener('click', () => {
@@ -610,6 +633,14 @@ toggleBtn.addEventListener('click', () => {
   passwordInput.type = showPassword ? 'text' : 'password';
   eyeIcon.style.display = showPassword ? 'none' : 'block';
   eyeOffIcon.style.display = showPassword ? 'block' : 'none';
+  updateCharacters();
+});
+
+toggleConfirmBtn.addEventListener('click', () => {
+  showConfirmPassword = !showConfirmPassword;
+  confirmPasswordInput.type = showConfirmPassword ? 'text' : 'password';
+  confirmEyeIcon.style.display = showConfirmPassword ? 'none' : 'block';
+  confirmEyeOffIcon.style.display = showConfirmPassword ? 'block' : 'none';
   updateCharacters();
 });
 
@@ -631,12 +662,18 @@ document.addEventListener('mousemove', (e) => {
 let isPasswordFocused = false;
 
 // Typing detection
+usernameInput.addEventListener('focus', () => { setTyping(true); });
+usernameInput.addEventListener('blur', () => { setTyping(false); });
+usernameInput.addEventListener('input', () => { updateCharacters(); });
 emailInput.addEventListener('focus', () => { setTyping(true); });
 emailInput.addEventListener('blur', () => { setTyping(false); });
 emailInput.addEventListener('input', () => { updateCharacters(); });
 passwordInput.addEventListener('focus', () => { isPasswordFocused = true; updateCharacters(); });
 passwordInput.addEventListener('blur', () => { isPasswordFocused = false; updateCharacters(); });
 passwordInput.addEventListener('input', () => { updateCharacters(); });
+confirmPasswordInput.addEventListener('focus', () => { isPasswordFocused = true; updateCharacters(); });
+confirmPasswordInput.addEventListener('blur', () => { isPasswordFocused = false; updateCharacters(); });
+confirmPasswordInput.addEventListener('input', () => { updateCharacters(); });
 
 function setTyping(typing) {
   isTyping = typing;
@@ -978,20 +1015,37 @@ function triggerLoginError() {
 }
 
 // ============ FORM VALIDATION ============
-document.getElementById('login-form').addEventListener('submit', (e) => {
+document.getElementById('register-form').addEventListener('submit', (e) => {
   e.preventDefault();
+  const username = usernameInput.value.trim();
   const email = emailInput.value.trim();
   const pwd = passwordInput.value;
+  const confirmPwd = confirmPasswordInput.value;
   const errEl = document.getElementById('error-msg');
+  const usernameLabel = document.getElementById('username-label');
   const emailLabel = document.getElementById('email-label');
   const pwdLabel = document.getElementById('password-label');
+  const confirmPwdLabel = document.getElementById('confirm-password-label');
 
   // Reset
   errEl.style.display = 'none';
+  usernameInput.classList.remove('error');
   emailInput.classList.remove('error');
   passwordInput.classList.remove('error');
+  confirmPasswordInput.classList.remove('error');
+  usernameLabel.classList.remove('error-label');
   emailLabel.classList.remove('error-label');
   pwdLabel.classList.remove('error-label');
+  confirmPwdLabel.classList.remove('error-label');
+
+  if (!username || username.length < 3) {
+    usernameInput.classList.add('error');
+    usernameLabel.classList.add('error-label');
+    errEl.textContent = 'Username must be at least 3 characters.';
+    errEl.style.display = 'block';
+    triggerLoginError();
+    return;
+  }
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     emailInput.classList.add('error');
@@ -1011,19 +1065,25 @@ document.getElementById('login-form').addEventListener('submit', (e) => {
     return;
   }
 
-  // Simulate login (always fails for demo to show the animation)
-  const btn = document.getElementById('btn-login');
-  btn.querySelector('.btn-text').textContent = 'Signing in...';
+  if (pwd !== confirmPwd) {
+    confirmPasswordInput.classList.add('error');
+    confirmPwdLabel.classList.add('error-label');
+    errEl.textContent = 'Passwords do not match.';
+    errEl.style.display = 'block';
+    triggerLoginError();
+    return;
+  }
+
+  // Simulate registration
+  const btn = document.getElementById('btn-register');
+  btn.querySelector('.btn-text').textContent = 'Creating account...';
   btn.disabled = true;
 
   setTimeout(() => {
-    btn.querySelector('.btn-text').textContent = 'Log In';
+    btn.querySelector('.btn-text').textContent = 'Sign Up';
     btn.disabled = false;
-    errEl.textContent = 'Invalid email or password. Please try again.';
-    errEl.style.display = 'block';
-    passwordInput.classList.add('error');
-    pwdLabel.classList.add('error-label');
-    triggerLoginError();
+    alert('Registration successful! Please log in.');
+    window.location.href = '/auth/login';
   }, 1500);
 });
 
