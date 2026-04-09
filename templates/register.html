@@ -471,6 +471,33 @@ body {
   color: #dc2626;
 }
 
+/* Get Code Button */
+.btn-get-code {
+  height: 48px;
+  padding: 0 20px;
+  border: none;
+  border-bottom: 1.5px solid #e0e0e0;
+  background: transparent;
+  color: #5B21B6;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.btn-get-code:hover:not(:disabled) {
+  color: #7c3aed;
+  border-bottom-color: #5B21B6;
+}
+
+.btn-get-code:disabled {
+  color: #999;
+  cursor: not-allowed;
+  border-bottom-color: #e0e0e0;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   #login-page { grid-template-columns: 1fr; }
@@ -554,8 +581,18 @@ body {
 
         <div class="form-group">
           <label id="email-label" for="email">Email</label>
+          <div class="input-wrapper" style="display: flex; gap: 10px;">
+            <input type="email" id="email" placeholder="you@example.com" autocomplete="off" style="flex: 1;" />
+            <button type="button" id="btn-get-code" class="btn-get-code" onclick="getVerificationCode()">
+              Get Code
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label id="code-label" for="verification-code">Verification Code</label>
           <div class="input-wrapper">
-            <input type="email" id="email" placeholder="you@example.com" autocomplete="off" />
+            <input type="text" id="verification-code" placeholder="Enter 6-digit code" maxlength="6" autocomplete="off" />
           </div>
         </div>
 
@@ -618,6 +655,7 @@ const passwordInput = document.getElementById('password');
 const confirmPasswordInput = document.getElementById('confirm-password');
 const emailInput = document.getElementById('email');
 const usernameInput = document.getElementById('username');
+const verificationCodeInput = document.getElementById('verification-code');
 const toggleBtn = document.getElementById('toggle-password');
 const eyeIcon = document.getElementById('eye-icon');
 const eyeOffIcon = document.getElementById('eye-off-icon');
@@ -627,6 +665,8 @@ const confirmEyeOffIcon = document.getElementById('confirm-eye-off-icon');
 let showPassword = false;
 let showConfirmPassword = false;
 let isLoginError = false;
+let countdownTimer = null;
+let isCodeSent = false;
 
 toggleBtn.addEventListener('click', () => {
   showPassword = !showPassword;
@@ -1014,6 +1054,79 @@ function triggerLoginError() {
   }, 2500);
 }
 
+// ============ VERIFICATION CODE ============
+function getVerificationCode() {
+  const email = emailInput.value.trim();
+
+  // 验证邮箱格式
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showError('Please enter a valid email address first.', 'email');
+    return;
+  }
+
+  const btn = document.getElementById('btn-get-code');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  fetch('/auth/send-code', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+    body: JSON.stringify({ email: email })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      isCodeSent = true;
+      startCountdown(btn);
+      hideError();
+      alert(data.message);
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Get Code';
+      showError(data.message, 'email');
+    }
+  })
+  .catch(error => {
+    btn.disabled = false;
+    btn.textContent = 'Get Code';
+    showError('Network error. Please try again.', 'email');
+  });
+}
+
+function startCountdown(btn) {
+  let seconds = 60;
+  btn.textContent = `${seconds}s`;
+
+  countdownTimer = setInterval(() => {
+    seconds--;
+    btn.textContent = `${seconds}s`;
+
+    if (seconds <= 0) {
+      clearInterval(countdownTimer);
+      btn.disabled = false;
+      btn.textContent = 'Resend Code';
+    }
+  }, 1000);
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
 // ============ FORM VALIDATION ============
 document.getElementById('register-form').addEventListener('submit', (e) => {
   e.preventDefault();
@@ -1021,9 +1134,11 @@ document.getElementById('register-form').addEventListener('submit', (e) => {
   const email = emailInput.value.trim();
   const pwd = passwordInput.value;
   const confirmPwd = confirmPasswordInput.value;
+  const verificationCode = verificationCodeInput ? verificationCodeInput.value.trim() : '';
   const errEl = document.getElementById('error-msg');
   const usernameLabel = document.getElementById('username-label');
   const emailLabel = document.getElementById('email-label');
+  const codeLabel = document.getElementById('code-label');
   const pwdLabel = document.getElementById('password-label');
   const confirmPwdLabel = document.getElementById('confirm-password-label');
 
@@ -1031,10 +1146,12 @@ document.getElementById('register-form').addEventListener('submit', (e) => {
   errEl.style.display = 'none';
   usernameInput.classList.remove('error');
   emailInput.classList.remove('error');
+  if (verificationCodeInput) verificationCodeInput.classList.remove('error');
   passwordInput.classList.remove('error');
   confirmPasswordInput.classList.remove('error');
   usernameLabel.classList.remove('error-label');
   emailLabel.classList.remove('error-label');
+  if (codeLabel) codeLabel.classList.remove('error-label');
   pwdLabel.classList.remove('error-label');
   confirmPwdLabel.classList.remove('error-label');
 
@@ -1051,6 +1168,24 @@ document.getElementById('register-form').addEventListener('submit', (e) => {
     emailInput.classList.add('error');
     emailLabel.classList.add('error-label');
     errEl.textContent = 'Please enter a valid email address.';
+    errEl.style.display = 'block';
+    triggerLoginError();
+    return;
+  }
+
+  if (!isCodeSent) {
+    if (verificationCodeInput) verificationCodeInput.classList.add('error');
+    if (codeLabel) codeLabel.classList.add('error-label');
+    errEl.textContent = 'Please get and enter verification code first.';
+    errEl.style.display = 'block';
+    triggerLoginError();
+    return;
+  }
+
+  if (!verificationCode || verificationCode.length !== 6) {
+    if (verificationCodeInput) verificationCodeInput.classList.add('error');
+    if (codeLabel) codeLabel.classList.add('error-label');
+    errEl.textContent = 'Please enter the 6-digit verification code.';
     errEl.style.display = 'block';
     triggerLoginError();
     return;
@@ -1074,18 +1209,64 @@ document.getElementById('register-form').addEventListener('submit', (e) => {
     return;
   }
 
-  // Simulate registration
+  // Register user with verification code
   const btn = document.getElementById('btn-register');
   btn.querySelector('.btn-text').textContent = 'Creating account...';
   btn.disabled = true;
 
-  setTimeout(() => {
+  fetch('/auth/register-user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+    body: JSON.stringify({
+      username: username,
+      email: email,
+      password: pwd,
+      verification_code: verificationCode
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert(data.message);
+      window.location.href = '/auth/login';
+    } else {
+      btn.querySelector('.btn-text').textContent = 'Sign Up';
+      btn.disabled = false;
+      errEl.textContent = data.message;
+      errEl.style.display = 'block';
+      triggerLoginError();
+    }
+  })
+  .catch(error => {
     btn.querySelector('.btn-text').textContent = 'Sign Up';
     btn.disabled = false;
-    alert('Registration successful! Please log in.');
-    window.location.href = '/auth/login';
-  }, 1500);
+    errEl.textContent = 'Network error. Please try again.';
+    errEl.style.display = 'block';
+    triggerLoginError();
+  });
 });
+
+// Helper functions
+function showError(message, fieldId) {
+  const errEl = document.getElementById('error-msg');
+  errEl.textContent = message;
+  errEl.style.display = 'block';
+
+  if (fieldId === 'email') {
+    emailInput.classList.add('error');
+    document.getElementById('email-label').classList.add('error-label');
+  }
+
+  triggerLoginError();
+}
+
+function hideError() {
+  const errEl = document.getElementById('error-msg');
+  errEl.style.display = 'none';
+}
 
 // Initial render
 updateCharacters();
