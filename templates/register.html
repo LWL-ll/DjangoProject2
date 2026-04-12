@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login - CareerCompass</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% csrf_token %}
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -1065,6 +1066,12 @@ function getVerificationCode() {
   }
 
   const btn = document.getElementById('btn-get-code');
+
+  // 防止重复点击
+  if (btn.disabled) {
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Sending...';
 
@@ -1084,15 +1091,18 @@ function getVerificationCode() {
       hideError();
       alert(data.message);
     } else {
+      isCodeSent = false;
       btn.disabled = false;
       btn.textContent = 'Get Code';
       showError(data.message, 'email');
     }
   })
   .catch(error => {
+    isCodeSent = false;
     btn.disabled = false;
     btn.textContent = 'Get Code';
     showError('Network error. Please try again.', 'email');
+    console.error('Error:', error);
   });
 }
 

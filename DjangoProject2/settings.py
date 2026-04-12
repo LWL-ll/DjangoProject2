@@ -124,7 +124,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = '2273107117@qq.com'
-EMAIL_HOST_PASSWORD = 'xynjlzzrsvrjebbc'
+EMAIL_HOST_PASSWORD = 'uzsimiteijqvecef'
 DEFAULT_FROM_EMAIL = '2273107117@qq.com'
 
 
