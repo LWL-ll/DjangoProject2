@@ -5,6 +5,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from .models import VerificationCode
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login as auth_login
 import json
 
 def login(request):
@@ -155,3 +156,43 @@ def register_user(request):
     
     except Exception as e:
         return JsonResponse({'success': False, 'message': f'注册失败：{str(e)}'})
+
+def user_login(request):
+    """处理用户登录"""
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': '请求方法错误'}, status=405)
+    
+    try:
+        data = json.loads(request.body)
+        email = data.get('email', '').strip()
+        password = data.get('password', '')
+        
+        # 基本验证
+        if not email:
+            return JsonResponse({'success': False, 'message': '请输入邮箱地址'})
+        
+        if not password:
+            return JsonResponse({'success': False, 'message': '请输入密码'})
+        
+        # 根据邮箱查找用户
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'message': '邮箱或密码错误'})
+        
+        # 验证用户名和密码（Django 使用 username 进行认证）
+        authenticated_user = authenticate(username=user.username, password=password)
+        
+        if authenticated_user is not None:
+            # 登录用户
+            auth_login(request, authenticated_user)
+            return JsonResponse({
+                'success': True, 
+                'message': '登录成功',
+                'username': user.username
+            })
+        else:
+            return JsonResponse({'success': False, 'message': '邮箱或密码错误'})
+    
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'登录失败：{str(e)}'})

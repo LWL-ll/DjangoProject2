@@ -1011,21 +1011,61 @@ document.getElementById('login-form').addEventListener('submit', (e) => {
     return;
   }
 
-  // Simulate login (always fails for demo to show the animation)
+  // Call login API
   const btn = document.getElementById('btn-login');
   btn.querySelector('.btn-text').textContent = 'Signing in...';
   btn.disabled = true;
 
-  setTimeout(() => {
+  fetch('/auth/user-login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+    body: JSON.stringify({
+      email: email,
+      password: pwd
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert('Welcome back, ' + data.username + '!');
+      window.location.href = '/';
+    } else {
+      btn.querySelector('.btn-text').textContent = 'Log In';
+      btn.disabled = false;
+      errEl.textContent = data.message;
+      errEl.style.display = 'block';
+      passwordInput.classList.add('error');
+      pwdLabel.classList.add('error-label');
+      triggerLoginError();
+    }
+  })
+  .catch(error => {
     btn.querySelector('.btn-text').textContent = 'Log In';
     btn.disabled = false;
-    errEl.textContent = 'Invalid email or password. Please try again.';
+    errEl.textContent = 'Network error. Please try again.';
     errEl.style.display = 'block';
-    passwordInput.classList.add('error');
-    pwdLabel.classList.add('error-label');
     triggerLoginError();
-  }, 1500);
+    console.error('Error:', error);
+  });
 });
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
 
 // Initial render
 updateCharacters();
