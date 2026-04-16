@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>校园美食点餐系统</title>
-    <!-- 引入CSS -->
-    <link rel="stylesheet" href="zhuyao.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/zhuyao.css' %}">
 </head>
 <body>
     <!--头部区域-->
@@ -18,11 +18,11 @@
             <!-- 导航栏（类名daohang，和CSS对应） -->
             <div class="daohang">
                 <ul>
-                    <li><a href="d:\html\校园点单系统\denglu .html">登录</a></li>
+                    <li><a href="/auth/login/" id="loginLink">登录</a></li>
                     <li><a href="#" class="active">首页</a></li>
-                    <li><a href="d:\html\05.html">个性化</a></li>
+                    <li><a href="#">个性化</a></li>
                     <li><a href="#">推荐</a></li>
-                    <li><a href="d:\html\校园点单系统\bilei tiezi .html">避雷</a></li> 
+                    <li><a href="{% url 'lauth:register' %}">避雷</a></li>
                 </ul>
             </div>
             <!-- 搜索框 -->
@@ -36,32 +36,33 @@
     </div>
     <!-- 优化后的Banner区（带轮播图，右对齐） -->
 <div class="banner">
+
     <div class="wrapper" style="display: flex; align-items: center; justify-content: space-between;">
-        
+
         <!-- 左侧文字 -->
         <div class="banner-text">
             <h2>校园美食，一键直达</h2>
             <p>足不出宿舍，吃遍校园美味</p>
             <a href="#" class="banner-btn">立即点餐</a>
         </div>
-        
+
         <!-- 右侧轮播图（不需要 margin-left: auto，因为父级用了 space-between） -->
         <div class="carousel-container" style="width: 500px; flex-shrink: 0; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
             <div class="carousel-wrapper" id="carouselWrapper" style="display: flex; transition: transform 0.5s ease-in-out; height: 350px;">
-                
+
                 <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                    <img src="d:\html\校园点单系统\微信图片_20260414200616_124_2.jpg" alt="美食1" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{% static 'tu/微信图片_20260414200616_124_2.jpg' %}" alt="美食1" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                    <img src="d:\html\校园点单系统\微信图片_20260414200815_126_2.jpg" alt="美食2" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{% static 'tu/微信图片_20260414200815_126_2.jpg' %}" alt="美食2" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                    <img src="d:\html\校园点单系统\微信图片_20260414200816_127_2.jpg" alt="美食3" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{% static 'tu/微信图片_20260414200816_127_2.jpg' %}" alt="美食3" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                    <img src="d:\html\校园点单系统\微信图片_20260414200806_125_2.jpg" alt="美食4" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{% static 'tu/微信图片_20260414200806_125_2.jpg' %}" alt="美食4" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                
+
             </div>
 
             <button onclick="prevSlide()" style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #4a148c; z-index: 10;">❮</button>
@@ -74,10 +75,10 @@
                 <span class="carousel-dot" onclick="goToSlide(3)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
             </div>
         </div>
-        
+
     </div>
 </div>
-    
+
     <!-- 美食分类区 -->
     <div class="category">
         <div class="wrapper">
@@ -157,7 +158,38 @@
         container.addEventListener('mouseleave', function() {
             autoPlay = setInterval(nextSlide, 4000);
         });
+
+        // ===== 登录功能 =====
+        const loginLink = document.getElementById('loginLink');
+        const userInfo = document.getElementById('userInfo');
+        const defaultUserText = document.getElementById('defaultUserText');
+        const usernameDisplay = document.getElementById('usernameDisplay');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // 退出登录
+        logoutBtn.addEventListener('click', async function() {
+            try {
+                // 调用后端退出接口（如果有的话）
+                // await fetch('/auth/logout/', { method: 'POST' });
+
+                // 更新前端显示
+                userInfo.classList.remove('active');
+                defaultUserText.style.display = 'inline';
+                loginLink.textContent = '登录';
+                loginLink.href = '/auth/login/';
+
+                alert('已退出登录');
+            } catch (error) {
+                console.error('退出错误:', error);
+            }
+        });
+
+        // 检查是否已登录（页面加载时）
+        window.addEventListener('load', function() {
+            // 可以通过AJAX检查用户登录状态
+            // 这里简化处理，实际项目中应该从后端获取
+        });
     </script>
-    
+
 </body>
 </html>

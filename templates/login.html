@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - CareerCompass</title>
+<title>登录 - 校园美食</title>
+{% load static %}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -545,15 +546,16 @@ body {
       </div>
 
       <form id="login-form" onsubmit="return false;">
+        {% csrf_token %}
         <div class="form-group">
-          <label id="email-label" for="email">Email</label>
+          <label id="email-label" for="email">邮箱</label>
           <div class="input-wrapper">
             <input type="email" id="email" placeholder="you@example.com" autocomplete="off" />
           </div>
         </div>
 
         <div class="form-group">
-          <label id="password-label" for="password">Password</label>
+          <label id="password-label" for="password">密码</label>
           <div class="input-wrapper">
             <input type="password" id="password" placeholder="••••••••" />
             <button type="button" class="toggle-password" id="toggle-password">
@@ -996,7 +998,7 @@ document.getElementById('login-form').addEventListener('submit', (e) => {
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     emailInput.classList.add('error');
     emailLabel.classList.add('error-label');
-    errEl.textContent = 'Please enter a valid email address.';
+    errEl.textContent = '请输入有效的邮箱地址';
     errEl.style.display = 'block';
     triggerLoginError();
     return;
@@ -1005,7 +1007,7 @@ document.getElementById('login-form').addEventListener('submit', (e) => {
   if (!pwd || pwd.length < 6) {
     passwordInput.classList.add('error');
     pwdLabel.classList.add('error-label');
-    errEl.textContent = 'Password must be at least 6 characters.';
+    errEl.textContent = '密码至少需要6个字符';
     errEl.style.display = 'block';
     triggerLoginError();
     return;
@@ -1013,10 +1015,10 @@ document.getElementById('login-form').addEventListener('submit', (e) => {
 
   // Call login API
   const btn = document.getElementById('btn-login');
-  btn.querySelector('.btn-text').textContent = 'Signing in...';
+  btn.querySelector('.btn-text').textContent = '登录中...';
   btn.disabled = true;
 
-  fetch('/auth/user-login', {
+  fetch('/auth/user-login/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -1027,15 +1029,22 @@ document.getElementById('login-form').addEventListener('submit', (e) => {
       password: pwd
     })
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
   .then(data => {
     if (data.success) {
-      alert('Welcome back, ' + data.username + '!');
-      window.location.href = '/';
+      btn.querySelector('.btn-text').textContent = '成功！';
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 500);
     } else {
-      btn.querySelector('.btn-text').textContent = 'Log In';
+      btn.querySelector('.btn-text').textContent = '登录';
       btn.disabled = false;
-      errEl.textContent = data.message;
+      errEl.textContent = data.message || '邮箱或密码错误';
       errEl.style.display = 'block';
       passwordInput.classList.add('error');
       pwdLabel.classList.add('error-label');
@@ -1043,12 +1052,12 @@ document.getElementById('login-form').addEventListener('submit', (e) => {
     }
   })
   .catch(error => {
-    btn.querySelector('.btn-text').textContent = 'Log In';
+    console.error('登录错误:', error);
+    btn.querySelector('.btn-text').textContent = '登录';
     btn.disabled = false;
-    errEl.textContent = 'Network error. Please try again.';
+    errEl.textContent = '网络错误，请检查网络连接后重试';
     errEl.style.display = 'block';
     triggerLoginError();
-    console.error('Error:', error);
   });
 });
 
