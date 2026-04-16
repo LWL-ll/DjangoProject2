@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美食避雷墙 - 可发布、评论、点赞、看浏览量</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: #f7f8fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #ff4d4f;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* 发布区域 */
+        .post-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .post-box h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .form-item {
+            margin-bottom: 15px;
+        }
+
+        .form-item label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        .form-item input,
+        .form-item textarea,
+        .form-item select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-item textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* 图片上传 */
+        .img-preview {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .img-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        /* 按钮 */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .submit-btn {
+            background: #ff4d4f;
+            color: white;
+        }
+
+        /* 帖子列表 */
+        .list-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.04);
+        }
+
+        .card .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .card .tag {
+            display: inline-block;
+            background: #fff2f0;
+            color: #ff4d4f;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 6px;
+        }
+
+        .card .info {
+            color: #666;
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .card .imgs {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .card .imgs img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        /* 点赞 + 评论 + 浏览量 */
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .like-btn {
+            color: #ff4d4f;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+        }
+
+        .comment-box {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .comment-item {
+            font-size: 13px;
+            color: #555;
+            padding: 6px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #999;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍔 美食避雷墙</h1>
+            <p>大家一起曝光难吃、坑人、踩雷的美食店！可评论、可点赞、可看浏览量</p>
+        </div>
+
+        <!-- 发布帖子 -->
+        <div class="post-box">
+            <h3>📝 发布避雷帖子</h3>
+            <div class="form-item">
+                <label>店铺名称</label>
+                <input type="text" id="shopName" placeholder="例如：XX烧烤 / XX奶茶">
+            </div>
+            <div class="form-item">
+                <label>店铺位置（选填）</label>
+                <input type="text" id="shopAddr" placeholder="例如：XX商场 / XX路">
+            </div>
+            <div class="form-item">
+                <label>避雷等级</label>
+                <select id="level">
+                    <option>超级踩雷</option>
+                    <option>难吃</option>
+                    <option>一般不推荐</option>
+                    <option>价格太贵</option>
+                    <option>卫生差</option>
+                </select>
+            </div>
+            <div class="form-item">
+                <label>避雷原因（详细写）</label>
+                <textarea id="content" placeholder="味道、服务、卫生、价格、分量...都可以写"></textarea>
+            </div>
+            <div class="form-item">
+                <label>上传现场图片</label>
+                <input type="file" id="imgFiles" accept="image/*" multiple onchange="previewImg()">
+                <div class="img-preview" id="imgPreview"></div>
+            </div>
+            <button class="btn submit-btn" onclick="postCard()">发布避雷帖</button>
+        </div>
+
+        <!-- 避雷帖子列表 -->
+        <h3 class="list-title">📢 最新避雷帖子</h3>
+        <div id="list"></div>
+    </div>
+
+    <script>
+        let imgList = [];
+        let postId = 0;
+
+        // 图片预览
+        function previewImg() {
+            let files = document.getElementById('imgFiles').files;
+            imgList = [];
+            let preview = document.getElementById('imgPreview');
+            preview.innerHTML = '';
+
+            for (let i = 0; i < files.length; i++) {
+                let img = document.createElement('img');
+                img.src = URL.createObjectURL(files[i]);
+                preview.appendChild(img);
+                imgList.push(img.src);
+            }
+        }
+
+        // 发布帖子
+        function postCard() {
+            let name = document.getElementById('shopName').value.trim();
+            let addr = document.getElementById('shopAddr').value.trim();
+            let level = document.getElementById('level').value;
+            let content = document.getElementById('content').value.trim();
+
+            if (!name || !content) {
+                alert('请填写店铺名称和避雷原因！');
+                return;
+            }
+
+            let time = new Date().toLocaleString();
+            let id = postId++;
+            let html = `
+                <div class="card" id="post-${id}">
+                    <div class="title">${name}</div>
+                    <span class="tag">${level}</span>
+                    <div class="info">
+                        ${addr ? '位置：' + addr + '<br>' : ''}
+                        ${content.replace(/\n/g, '<br>')}
+                    </div>
+                    <div class="imgs">
+                        ${imgList.map(src => `<img src="${src}">`).join('')}
+                    </div>
+                    <div class="time">发布时间：${time}</div>
+
+                    <!-- 点赞 + 评论 + 浏览量 -->
+                    <div class="stat">
+                        <button class="like-btn" onclick="like(${id})">❤️ <span id="like-${id}">0</span></button>
+                        <span>👀 <span id="view-${id}">1</span> 次浏览</span>
+                        <span>💬 <span id="comment-count-${id}">0</span> 条评论</span>
+                    </div>
+
+                    <!-- 评论区 -->
+                    <div class="comment-box">
+                        <input type="text" class="comment-input" id="comment-input-${id}" placeholder="说点什么…">
+                        <button class="btn" onclick="addComment(${id})" style="background:#4096ff;color:white;padding:6px 12px;">发表评论</button>
+                        <div id="comment-list-${id}" style="margin-top:10px;"></div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('list').innerHTML += html;
+
+            // 清空表单
+            document.getElementById('shopName').value = '';
+            document.getElementById('shopAddr').value = '';
+            document.getElementById('content').value = '';
+            document.getElementById('imgFiles').value = '';
+            document.getElementById('imgPreview').innerHTML = '';
+            imgList = [];
+
+            alert('发布成功！');
+        }
+
+        // 点赞
+        function like(id) {
+            let likeNum = document.getElementById('like-' + id);
+            likeNum.innerText = parseInt(likeNum.innerText) + 1;
+        }
+
+        // 发表评论
+        function addComment(id) {
+            let input = document.getElementById('comment-input-' + id);
+            let text = input.value.trim();
+            if (!text) return;
+
+            let time = new Date().toLocaleString().substr(11);
+            let comment = document.createElement('div');
+            comment.className = 'comment-item';
+            comment.innerHTML = ` ${text} <span class="comment-time">${time}</span>`;
+
+            document.getElementById('comment-list-' + id).appendChild(comment);
+            input.value = '';
+
+            // 评论数+1
+            let count = document.getElementById('comment-count-' + id);
+            count.innerText = parseInt(count.innerText) + 1;
+        }
+    </script>
+</body>
+</html>
