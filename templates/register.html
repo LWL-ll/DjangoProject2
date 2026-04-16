@@ -1075,7 +1075,7 @@ function getVerificationCode() {
   btn.disabled = true;
   btn.textContent = 'Sending...';
 
-  fetch('/auth/send-code', {
+  fetch('/auth/send-code/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -1224,7 +1224,7 @@ document.getElementById('register-form').addEventListener('submit', (e) => {
   btn.querySelector('.btn-text').textContent = 'Creating account...';
   btn.disabled = true;
 
-  fetch('/auth/register-user', {
+  fetch('/auth/register-user/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

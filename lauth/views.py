@@ -27,20 +27,6 @@ from .models import VerificationCode
 # __name__ 的值是 'lauth.views'，这样可以在日志中区分不同模块的输出
 logger = logging.getLogger(__name__)
 
-
-def index(request):
-    """
-    首页视图
-    
-    Args:
-        request: HTTP 请求对象
-        
-    Returns:
-        HttpResponse: 渲染后的 index.html 页面
-    """
-    return render(request, 'index.html')
-
-
 # ===== 页面视图函数 =====
 def login(request):
     """
