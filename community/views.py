@@ -33,7 +33,7 @@ def recommend_page(request):
     Returns:
         HttpResponse: 渲染后的推荐页面
     """
-    return render(request, 'bilei tiezi.html')
+    return render(request, '项目(1).html')
 
 
 def get_posts(request):

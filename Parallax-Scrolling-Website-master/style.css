@@ -1,0 +1,142 @@
+/* style.css */
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap'); 
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  scroll-behavior: smooth; 
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* 初始背景设为深色，与星空匹配 */
+  background-color: #2b1055; 
+  transition: background-color 0.1s ease; /* 添加过渡使颜色变化更平滑 */
+}
+
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 30px 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10000;
+  transition: 0.5s; /* 头部动画过渡 */
+}
+
+header .logo {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 2em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+header ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header ul li {
+  list-style: none;
+  margin-left: 20px;
+}
+
+header ul li a {
+  text-decoration: none;
+  padding: 6px 15px;
+  color: #fff;
+  border-radius: 20px;
+  transition: 0.3s; /* 链接颜色过渡 */
+}
+
+header ul li a:hover,
+header ul li a.active {
+  background: #fff;
+  color: #2b1055;
+}
+
+section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  padding: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  /* 确保 section 背景透明，透出 body 的颜色 */
+  background: transparent; 
+}
+
+section::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100px;
+  /* 底部渐变遮罩，可以根据需要保留或移除，如果背景变白，这个深色遮罩可能需要调整 */
+  background: linear-gradient(to top, rgba(28, 5, 34, 0.8), transparent);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+section img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* 删除了 moon 的相关样式，因为 HTML 中已删除 */
+
+section img#mountains_front {
+  z-index: 10;
+}
+
+/* 删除了 #text 相关样式，因为 HTML 中已删除 */
+
+#btn {
+  text-decoration: none;
+  display: inline-block;
+  padding: 8px 30px;
+  border-radius: 40px;
+  background: #fff;
+  color: #2b1055;
+  font-size: 1.5em;
+  z-index: 9;
+  transform: translateY(100px);
+  transition: 0.3s;
+}
+
+.sec {
+  position: relative;
+  padding: 100px;
+  /* 第二屏背景设为白色，或者保持深色取决于你的设计，这里为了配合“渐变为白色”的主题，设为白色 */
+  background: #fff; 
+  color: #333; /* 文字颜色改为深色以适配白色背景 */
+  z-index: 100; /* 确保在视差层之上 */
+}
+
+.sec h2 {
+  font-size: 3.5em;
+  margin-bottom: 10px;
+  color: #2b1055; /* 标题颜色 */
+}
+
+.sec p {
+  font-size: 1em;
+  color: #555; /* 段落颜色 */
+}

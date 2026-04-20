@@ -6,23 +6,100 @@
     <title>校园美食点餐系统</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/zhuyao.css' %}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: #2b1055;
+            transition: background-color 0.1s ease;
+        }
+
+        .parallax-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            padding: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .parallax-section::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, #fff, transparent);
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .parallax-section img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .parallax-section img#mountains_front {
+            z-index: 10;
+        }
+
+        #explore-btn {
+            text-decoration: none;
+            display: inline-block;
+            padding: 8px 30px;
+            border-radius: 40px;
+            background: #fff;
+            color: #2b1055;
+            font-size: 1.5em;
+            z-index: 9;
+            transform: translateY(100px);
+            transition: 0.3s;
+        }
+
+        #explore-btn:hover {
+            background: #2b1055;
+            color: #fff;
+        }
+
+        .content-section {
+            position: relative;
+            background: #fff;
+            color: #333;
+            z-index: 100;
+        }
+    </style>
 </head>
 <body>
-    <!--头部区域-->
-    <div class="header">
+    <!-- 固定顶部导航栏 -->
+    <div class="header" style="position: fixed; top: 0; left: 0; width: 100%; z-index: 10000; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
         <div class="wrapper">
             <!--logo-->
             <div class="logo">
-                <h1><a href="#">校园美食</a></h1>
+                <h1><a href="#" style="color: #4a148c;">校园美食</a></h1>
             </div>
             <!-- 导航栏（类名daohang，和CSS对应） -->
             <div class="daohang">
                 <ul>
-                    <li><a href="/auth/login/" id="loginLink">登录</a></li>
-                    <li><a href="#" class="active">首页</a></li>
-                    <li><a href="#">个性化</a></li>
-                    <li><a href="#">推荐</a></li>
-                    <li><a href="javascript:void(0)" id="bileiLink">避雷</a></li>
+                    <li><a href="/auth/login/" id="loginLink" style="color: #4a148c;">登录</a></li>
+                    <li><a href="#" class="active" style="color: #4a148c; background: rgba(74, 20, 140, 0.1);">首页</a></li>
+                    <li><a href="#" id="personalizeLink" style="color: #4a148c;">个性化</a></li>
+                    <li><a href="{% url 'community:recommend' %}" id="recommendLink" style="color: #4a148c;">推荐</a></li>
+                    <li><a href="javascript:void(0)" id="bileiLink" style="color: #4a148c;">避雷</a></li>
                 </ul>
             </div>
             <!-- 搜索框 -->
@@ -32,93 +109,121 @@
             </div>
             <!-- 用户 -->
             <div class="yonghu" id="userDisplay">
-                <span id="loginText">用户</span>
-                <a href="/auth/login/" id="loginBtn">登录</a>
-                <span id="usernameText" style="display:none;"></span>
-                <a href="javascript:void(0)" id="logoutBtn" style="display:none;">退出</a>
-            </div>
-        </div>
-    </div>
-    <!-- 优化后的Banner区（带轮播图，右对齐） -->
-<div class="banner">
-
-    <div class="wrapper" style="display: flex; align-items: center; justify-content: space-between;">
-
-        <!-- 左侧文字 -->
-        <div class="banner-text">
-            <h2>校园美食，一键直达</h2>
-            <p>足不出宿舍，吃遍校园美味</p>
-            <a href="#" class="banner-btn">立即点餐</a>
-        </div>
-
-        <!-- 右侧轮播图（不需要 margin-left: auto，因为父级用了 space-between） -->
-        <div class="carousel-container" style="width: 500px; flex-shrink: 0; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
-            <div class="carousel-wrapper" id="carouselWrapper" style="display: flex; transition: transform 0.5s ease-in-out; height: 350px;">
-
-                <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                    <img src="{% static 'tu/微信图片_20260414200616_124_2.jpg' %}" alt="美食1" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                    <img src="{% static 'tu/微信图片_20260414200815_126_2.jpg' %}" alt="美食2" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                    <img src="{% static 'tu/微信图片_20260414200816_127_2.jpg' %}" alt="美食3" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                    <img src="{% static 'tu/微信图片_20260414200806_125_2.jpg' %}" alt="美食4" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-
-            </div>
-
-            <button onclick="prevSlide()" style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #4a148c; z-index: 10;">❮</button>
-            <button onclick="nextSlide()" style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #4a148c; z-index: 10;">❯</button>
-
-            <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10;">
-                <span class="carousel-dot active" onclick="goToSlide(0)" style="width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; border: 2px solid #4a148c;"></span>
-                <span class="carousel-dot" onclick="goToSlide(1)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
-                <span class="carousel-dot" onclick="goToSlide(2)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
-                <span class="carousel-dot" onclick="goToSlide(3)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-    <!-- 美食分类区 -->
-    <div class="category">
-        <div class="wrapper">
-            <h3 class="section-title">美食分类</h3>
-            <div class="category-list">
-                <div class="category-item">
-                    <div class="category-icon">🍔</div>
-                    <p>快餐汉堡</p>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">🥤</div>
-                    <p>奶茶饮品</p>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">🍜</div>
-                    <p>中式正餐</p>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">🍰</div>
-                    <p>甜品糕点</p>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">🌮</div>
-                    <p>特色小吃</p>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">🥗</div>
-                    <p>轻食减脂</p>
-                </div>
+                <span id="loginText" style="color: #4a148c;">用户</span>
+                <a href="/auth/login/" id="loginBtn" style="color: #4a148c;">登录</a>
+                <span id="usernameText" style="display:none; color: #4a148c;"></span>
+                <a href="javascript:void(0)" id="logoutBtn" style="display:none; color: #4a148c;">退出</a>
             </div>
         </div>
     </div>
 
-    <!-- ========== 轮播图脚本（放在 </body> 前面）========== -->
+    <!-- 视差滚动区域 -->
+    <section class="parallax-section" style="margin-top: 80px;">
+        <img src="{% static 'parallax-images/stars.png' %}" id="stars" alt="星空">
+        <img src="{% static 'parallax-images/mountains_behind.png' %}" id="mountains_behind" alt="远山">
+        <a href="#main-content" id="explore-btn">探索美食</a>
+        <img src="{% static 'parallax-images/mountains_front.png' %}" id="mountains_front" alt="近山">
+    </section>
+
+    <!-- 主要内容区域（原主页内容） -->
+    <div id="main-content" class="content-section">
+        <!-- 优化后的Banner区（带轮播图，右对齐） -->
+        <div class="banner">
+
+            <div class="wrapper" style="display: flex; align-items: center; justify-content: space-between;">
+
+                <!-- 左侧文字 -->
+                <div class="banner-text">
+                    <h2>校园美食，一键直达</h2>
+                    <p>足不出宿舍，吃遍校园美味</p>
+                    <a href="#" class="banner-btn">立即点餐</a>
+                </div>
+
+                <!-- 右侧轮播图（不需要 margin-left: auto，因为父级用了 space-between） -->
+                <div class="carousel-container" style="width: 500px; flex-shrink: 0; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                    <div class="carousel-wrapper" id="carouselWrapper" style="display: flex; transition: transform 0.5s ease-in-out; height: 350px;">
+
+                        <div class="carousel-slide" style="min-width: 100%; height: 100%;">
+                            <img src="{% static 'tu/微信图片_20260414200616_124_2.jpg' %}" alt="美食1" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div class="carousel-slide" style="min-width: 100%; height: 100%;">
+                            <img src="{% static 'tu/微信图片_20260414200815_126_2.jpg' %}" alt="美食2" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div class="carousel-slide" style="min-width: 100%; height: 100%;">
+                            <img src="{% static 'tu/微信图片_20260414200816_127_2.jpg' %}" alt="美食3" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div class="carousel-slide" style="min-width: 100%; height: 100%;">
+                            <img src="{% static 'tu/微信图片_20260414200806_125_2.jpg' %}" alt="美食4" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+
+                    </div>
+
+                    <button onclick="prevSlide()" style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #4a148c; z-index: 10;">❮</button>
+                    <button onclick="nextSlide()" style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #4a148c; z-index: 10;">❯</button>
+
+                    <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10;">
+                        <span class="carousel-dot active" onclick="goToSlide(0)" style="width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; border: 2px solid #4a148c;"></span>
+                        <span class="carousel-dot" onclick="goToSlide(1)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
+                        <span class="carousel-dot" onclick="goToSlide(2)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
+                        <span class="carousel-dot" onclick="goToSlide(3)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 美食分类区 -->
+        <div class="category">
+            <div class="wrapper">
+                <h3 class="section-title">美食分类</h3>
+                <div class="category-list">
+                    <div class="category-item">
+                        <div class="category-icon">🍔</div>
+                        <p>快餐汉堡</p>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">🥤</div>
+                        <p>奶茶饮品</p>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">🍜</div>
+                        <p>中式正餐</p>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">🍰</div>
+                        <p>甜品糕点</p>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">🌮</div>
+                        <p>特色小吃</p>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">🥗</div>
+                        <p>轻食减脂</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 脚本 ========== -->
     <script>
+        // 视差滚动效果
+        let stars = document.getElementById('stars');
+        let mountains_behind = document.getElementById('mountains_behind');
+        let explore_btn = document.getElementById('explore-btn');
+        let mountains_front = document.getElementById('mountains_front');
+
+        window.addEventListener('scroll', function(){
+            let value = window.scrollY;
+
+            mountains_behind.style.top = value * 0.5 + 'px';
+            mountains_front.style.top = value * 0 + 'px';
+
+            explore_btn.style.marginTop = value * 1.5 + 'px';
+        });
+
+        // 轮播图功能
         let currentSlide = 0;
         const wrapper = document.getElementById('carouselWrapper');
         const dots = document.querySelectorAll('.carousel-dot');
@@ -157,12 +262,14 @@
 
         // 鼠标悬停暂停
         const container = document.querySelector('.carousel-container');
-        container.addEventListener('mouseenter', function() {
-            clearInterval(autoPlay);
-        });
-        container.addEventListener('mouseleave', function() {
-            autoPlay = setInterval(nextSlide, 4000);
-        });
+        if (container) {
+            container.addEventListener('mouseenter', function() {
+                clearInterval(autoPlay);
+            });
+            container.addEventListener('mouseleave', function() {
+                autoPlay = setInterval(nextSlide, 4000);
+            });
+        }
 
         // ===== 登录状态管理 =====
         const loginBtn = document.getElementById('loginBtn');
@@ -170,6 +277,8 @@
         const loginText = document.getElementById('loginText');
         const usernameText = document.getElementById('usernameText');
         const bileiLink = document.getElementById('bileiLink');
+        const recommendLink = document.getElementById('recommendLink');
+        const personalizeLink = document.getElementById('personalizeLink');
 
         let isLoggedIn = false;
 
@@ -205,16 +314,39 @@
                 });
         }
 
+        // 推荐链接点击事件
+        if (recommendLink) {
+            recommendLink.addEventListener('click', function(e) {
+                if (!isLoggedIn) {
+                    e.preventDefault();
+                    alert('请先登录后再访问推荐页面');
+                    window.location.href = '/auth/login/';
+                }
+            });
+        }
+
         // 避雷链接点击事件
         if (bileiLink) {
             bileiLink.addEventListener('click', function() {
                 if (isLoggedIn) {
                     // 已登录，跳转到避雷页面
-                    window.location.href = '/bilei/';
+                    window.location.href = '/community/bilei/';
                 } else {
                     // 未登录，跳转到登录页面
                     alert('请先登录后再访问避雷页面');
                     window.location.href = '/auth/login/';
+                }
+            });
+        }
+
+        // 个性化链接点击事件
+        if (personalizeLink) {
+            personalizeLink.addEventListener('click', function() {
+                if (!isLoggedIn) {
+                    alert('请先登录后再访问个性化页面');
+                    window.location.href = '/auth/login/';
+                } else {
+                    alert('个性化页面正在开发中...');
                 }
             });
         }

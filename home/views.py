@@ -14,7 +14,7 @@ def index(request):
         request: HTTP 请求对象
 
     Returns:
-        HttpResponse: 渲染后的 index.html 页面
+        HttpResponse: 渲染后的 index2.html 页面
     """
     return render(request, 'index.html')
 
