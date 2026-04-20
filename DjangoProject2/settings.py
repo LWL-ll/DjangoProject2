@@ -125,6 +125,10 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+SESSION_COOKIE_AGE = 5 * 24 * 60 * 60  # 5天（秒数）
+SESSION_SAVE_EVERY_REQUEST = True  # 每次请求都刷新session过期时间
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # 关闭浏览器后session不失效
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.qq.com'

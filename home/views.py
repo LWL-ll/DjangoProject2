@@ -1,13 +1,14 @@
 import logging
 from django.shortcuts import render
 from django.http import JsonResponse
+from lauth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 
 
 def index(request):
     """
-    首页视图
+    首页视图（不需要登录即可访问）
 
     Args:
         request: HTTP 请求对象
@@ -18,9 +19,10 @@ def index(request):
     return render(request, 'index.html')
 
 
+@login_required
 def get_categories(request):
     """
-    获取美食分类列表接口
+    获取美食分类列表接口（需要登录）
 
     Args:
         request: HTTP 请求对象
@@ -43,9 +45,10 @@ def get_categories(request):
     })
 
 
+@login_required
 def search_foods(request):
     """
-    搜索美食接口
+    搜索美食接口（需要登录）
 
     Args:
         request: HTTP 请求对象，GET参数中包含搜索关键字

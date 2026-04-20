@@ -451,6 +451,14 @@ def user_login(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'message': '请求方法错误'}, status=405)
     
+    # 如果用户已登录，直接返回
+    if request.user.is_authenticated:
+        return JsonResponse({
+            'success': True,
+            'message': '已登录',
+            'username': request.user.username
+        })
+    
     try:
         # 解析 JSON 数据
         data = json.loads(request.body)
@@ -477,33 +485,21 @@ def user_login(request):
         
         try:
             # 根据邮箱查找用户
-            # get() 方法：
-            # - 找到一条记录：返回对象
-            # - 找不到：抛出 DoesNotExist 异常
-            # - 找到多条：抛出 MultipleObjectsReturned 异常
             user = User.objects.get(email=email)
         
         except User.DoesNotExist:
             # 用户不存在
-            # 记录警告日志（内部记录详细信息）
             logger.warning(f'登录失败 - 邮箱不存在: {email}')
-            # 返回模糊错误信息（对外不暴露具体原因）
             return JsonResponse(error_message)
         
         except User.MultipleObjectsReturned:
-            # 多个用户使用同一邮箱（理论上不应该发生，因为邮箱有唯一性约束）
-            # 记录错误日志
+            # 多个用户使用同一邮箱
             logger.error(f'登录失败 - 多个用户使用同一邮箱: {email}')
             return JsonResponse(error_message)
         
         # ===== 验证密码 =====
         
         # 调用 Django 的 authenticate 函数验证用户凭据
-        # 注意：Django 默认使用 username 进行认证，所以传入 user.username
-        # authenticate 会：
-        # 1. 查找用户名为 user.username 的用户
-        # 2. 验证密码是否正确（比较哈希值）
-        # 3. 成功返回用户对象，失败返回 None
         authenticated_user = authenticate(username=user.username, password=password)
         
         # 检查认证结果
@@ -515,11 +511,10 @@ def user_login(request):
         # ===== 创建登录会话 =====
         
         # 调用 auth_login 函数创建会话
-        # 这会：
-        # 1. 在数据库中创建 session 记录
-        # 2. 在用户的浏览器中设置 session cookie
-        # 3. 后续请求会自动携带这个 cookie，保持登录状态
         auth_login(request, authenticated_user)
+        
+        # 设置 session 过期时间为 5 天
+        request.session.set_expiry(5 * 24 * 60 * 60)
         
         # 记录成功日志
         logger.info(f'用户登录成功: {user.username}')
@@ -528,10 +523,60 @@ def user_login(request):
         return JsonResponse({
             'success': True, 
             'message': '登录成功',
-            'username': user.username  # 前端可以用这个显示欢迎信息
+            'username': user.username
         })
     
     except Exception as e:
         # 捕获所有未预期的异常
         logger.error(f'登录时发生错误: {str(e)}')
         return JsonResponse({'success': False, 'message': '登录失败，请稍后重试'})
+
+
+def user_logout(request):
+    """
+    处理用户退出登录
+    
+    工作流程：
+    1. 清除用户的登录会话
+    2. 返回退出成功消息
+    
+    Args:
+        request: HTTP 请求对象
+        
+    Returns:
+        JsonResponse: JSON 格式的退出结果
+            成功: {'success': True, 'message': '退出成功'}
+    """
+    from django.contrib.auth import logout as auth_logout
+    
+    # 调用 Django 的 logout 函数清除会话
+    auth_logout(request)
+    
+    # 记录日志
+    logger.info('用户退出登录')
+    
+    # 返回成功响应
+    return JsonResponse({'success': True, 'message': '退出成功'})
+
+
+def check_login_status(request):
+    """
+    检查用户登录状态
+    
+    Args:
+        request: HTTP 请求对象
+        
+    Returns:
+        JsonResponse: JSON 格式的登录状态
+            已登录: {'is_authenticated': True, 'username': 用户名}
+            未登录: {'is_authenticated': False}
+    """
+    if request.user.is_authenticated:
+        return JsonResponse({
+            'is_authenticated': True,
+            'username': request.user.username
+        })
+    else:
+        return JsonResponse({
+            'is_authenticated': False
+        })
