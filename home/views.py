@@ -70,3 +70,16 @@ def search_foods(request):
         'data': foods,
         'message': f'找到 {len(foods)} 个结果'
     })
+
+
+def bilei(request):
+    """
+    避雷帖子页面视图
+
+    Args:
+        request: HTTP 请求对象
+
+    Returns:
+        HttpResponse: 渲染后的 bilei tiezi.html 页面
+    """
+    return render(request, 'bilei tiezi.html')

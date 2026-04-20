@@ -22,7 +22,7 @@
                     <li><a href="#" class="active">首页</a></li>
                     <li><a href="#">个性化</a></li>
                     <li><a href="#">推荐</a></li>
-                    <li><a href="{% url 'lauth:register' %}">避雷</a></li>
+                    <li><a href="javascript:void(0)" id="bileiLink">避雷</a></li>
                 </ul>
             </div>
             <!-- 搜索框 -->
@@ -169,6 +169,9 @@
         const logoutBtn = document.getElementById('logoutBtn');
         const loginText = document.getElementById('loginText');
         const usernameText = document.getElementById('usernameText');
+        const bileiLink = document.getElementById('bileiLink');
+
+        let isLoggedIn = false;
 
         // 页面加载时检查登录状态
         window.addEventListener('load', function() {
@@ -187,17 +190,33 @@
                         usernameText.style.display = 'inline';
                         usernameText.textContent = data.username;
                         logoutBtn.style.display = 'inline';
+                        isLoggedIn = true;
                     } else {
                         // 未登录，显示登录按钮
                         loginText.style.display = 'inline';
                         loginBtn.style.display = 'inline';
                         usernameText.style.display = 'none';
                         logoutBtn.style.display = 'none';
+                        isLoggedIn = false;
                     }
                 })
                 .catch(error => {
                     console.error('检查登录状态失败:', error);
                 });
+        }
+
+        // 避雷链接点击事件
+        if (bileiLink) {
+            bileiLink.addEventListener('click', function() {
+                if (isLoggedIn) {
+                    // 已登录，跳转到避雷页面
+                    window.location.href = '/bilei/';
+                } else {
+                    // 未登录，跳转到登录页面
+                    alert('请先登录后再访问避雷页面');
+                    window.location.href = '/auth/login/';
+                }
+            });
         }
 
         // 退出登录
