@@ -43,7 +43,7 @@ body {
 }
 .header .logo a {
     font-size: 28px;
-    color: #4B0082; /* 深紫色，和你截图一致 */
+    color: #1976d2;
     font-weight: bold;
 }
 
@@ -56,7 +56,7 @@ body {
 }
 .header .daohang a {
     font-size: 18px;
-    color: #4B0082;
+    color: #1976d2;
 }
 .header .daohang a.active {
     color: #000;
@@ -76,7 +76,7 @@ body {
 }
 .header .search a {
     font-size: 16px;
-    color: #4B0082;
+    color: #1976d2;
 }
 
 /* 用户样式 */
@@ -90,107 +90,23 @@ body {
    横幅 banner 样式
 ======================== */
 .banner {
-    height: 420px;
-    background-color: pink; /* 先用粉色占位，后续可以换成背景图 */
-    overflow: hidden;
-}
-
-.banner .wrapper {
-    height: 420px;
-    position: relative;
-    padding-top: 100px;
-}
-
-/* 左侧文字 */
-.banner-text {
-    float: left;
-    color: #fff;
-    margin-left: 20px;
-}
-
-.banner-text h2 {
-    font-size: 46px;
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-.banner-text p {
-    font-size: 20px;
-    opacity: 0.95;
-}
-
-/* 右侧装饰图 */
-.banner-img {
-    float: right;
-    width: 380px;
-    height: 320px;
-    background: url("food.png") no-repeat center;
-    background-size: contain;
-    margin-top: 20px;
-}
-/* 美食分类区样式 */
-.category {
-  padding: 50px 0;
-  background-color: #f8f9fa;
-}
-.section-title {
-  font-size: 28px;
-  color: #5a189a;
-  text-align: center;
-  margin-bottom: 40px;
-  font-weight: bold;
-}
-.category-list {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-}
-.category-item {
-  width: 150px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-.category-icon {
-  width: 80px;
-  height: 80px;
-  line-height: 80px;
-  background-color: #f8c8d0;
-  border-radius: 50%;
-  font-size: 36px;
-  margin: 0 auto 15px;
-  transition: all 0.3s;
-}
-.category-item p {
-  font-size: 16px;
-  color: #333;
-}
-.category-item:hover .category-icon {
-  background-color: #5a189a;
-  color: #fff;
-  transform: scale(1.1);
-}
-
-/* ========================
-   横幅 banner 样式（清理版）
-======================== */
-.banner {
     height: 400px;
-    background-color: #f8c8d0;
+    background-color: #e3f2fd;
     overflow: hidden;
 }
 
 .banner .wrapper {
     height: 100%;
-    /* 用space-between让文字靠左，轮播图靠右 */
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 50px;
 }
 
+/* 左侧文字 */
 .banner-text {
-    color: #5a189a;
+    color: #1976d2;
 }
 
 .banner-text h2 {
@@ -205,18 +121,53 @@ body {
     opacity: 0.9;
 }
 
-.banner-btn {
-    display: inline-block;
-    padding: 12px 30px;
-    background-color: #5a189a;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 25px;
-    font-size: 16px;
-    transition: all 0.3s;
+/* 右侧装饰图 - 已删除，因为使用轮播图替代 */
+
+/* 美食分类区样式 */
+.category {
+  padding: 50px 0;
+  background-color: #f8f9fa;
 }
 
-.banner-btn:hover {
-    background-color: #7b2cbf;
-    transform: translateY(-2px);
+.category-list {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.category-item {
+  width: 150px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-item:hover .category-icon {
+  background-color: #1976d2;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.category-icon {
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  background-color: #e3f2fd;
+  border-radius: 50%;
+  font-size: 36px;
+  margin: 0 auto 15px;
+  transition: all 0.3s;
+}
+
+.section-title {
+  font-size: 28px;
+  color: #1976d2;
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: bold;
 }

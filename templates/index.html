@@ -61,19 +61,28 @@
         #explore-btn {
             text-decoration: none;
             display: inline-block;
-            padding: 8px 30px;
-            border-radius: 40px;
+            padding: 15px 50px;
+            border-radius: 50px;
             background: #fff;
-            color: #2b1055;
-            font-size: 1.5em;
+            color: #1976d2;
+            font-size: 2em;
+            font-weight: 600;
             z-index: 9;
-            transform: translateY(100px);
-            transition: 0.3s;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 8px 25px rgba(25, 118, 210, 0.3);
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+            border: 3px solid #1976d2;
         }
 
         #explore-btn:hover {
-            background: #2b1055;
+            background: #1976d2;
             color: #fff;
+            box-shadow: 0 12px 35px rgba(25, 118, 210, 0.5);
+            transform: translate(-50%, -50%) scale(1.05);
         }
 
         .content-section {
@@ -90,16 +99,16 @@
         <div class="wrapper">
             <!--logo-->
             <div class="logo">
-                <h1><a href="#" style="color: #4a148c;">校园美食</a></h1>
+                <h1><a href="#" style="color: #1976d2;">校园美食</a></h1>
             </div>
             <!-- 导航栏（类名daohang，和CSS对应） -->
             <div class="daohang">
                 <ul>
-                    <li><a href="/auth/login/" id="loginLink" style="color: #4a148c;">登录</a></li>
-                    <li><a href="#" class="active" style="color: #4a148c; background: rgba(74, 20, 140, 0.1);">首页</a></li>
-                    <li><a href="#" id="personalizeLink" style="color: #4a148c;">个性化</a></li>
-                    <li><a href="{% url 'community:recommend' %}" id="recommendLink" style="color: #4a148c;">推荐</a></li>
-                    <li><a href="javascript:void(0)" id="bileiLink" style="color: #4a148c;">避雷</a></li>
+                    <li><a href="/auth/login/" id="loginLink" style="color: #1976d2;">登录</a></li>
+                    <li><a href="#" class="active" style="color: #1976d2; background: rgba(25, 118, 210, 0.1);">首页</a></li>
+                    <li><a href="#" id="personalizeLink" style="color: #1976d2;">个性化</a></li>
+                    <li><a href="{% url 'community:recommend' %}" id="recommendLink" style="color: #1976d2;">推荐</a></li>
+                    <li><a href="javascript:void(0)" id="bileiLink" style="color: #1976d2;">避雷</a></li>
                 </ul>
             </div>
             <!-- 搜索框 -->
@@ -109,21 +118,15 @@
             </div>
             <!-- 用户 -->
             <div class="yonghu" id="userDisplay">
-                <span id="loginText" style="color: #4a148c;">用户</span>
-                <a href="/auth/login/" id="loginBtn" style="color: #4a148c;">登录</a>
-                <span id="usernameText" style="display:none; color: #4a148c;"></span>
-                <a href="javascript:void(0)" id="logoutBtn" style="display:none; color: #4a148c;">退出</a>
+                <span id="loginText" style="color: #1976d2;">用户</span>
+                <a href="/auth/login/" id="loginBtn" style="color: #1976d2;">登录</a>
+                <span id="usernameText" style="display:none; color: #1976d2;"></span>
+                <a href="javascript:void(0)" id="logoutBtn" style="display:none; color: #1976d2;">退出</a>
             </div>
         </div>
     </div>
 
     <!-- 视差滚动区域 -->
-    <section class="parallax-section" style="margin-top: 80px;">
-        <img src="{% static 'parallax-images/stars.png' %}" id="stars" alt="星空">
-        <img src="{% static 'parallax-images/mountains_behind.png' %}" id="mountains_behind" alt="远山">
-        <a href="#main-content" id="explore-btn">探索美食</a>
-        <img src="{% static 'parallax-images/mountains_front.png' %}" id="mountains_front" alt="近山">
-    </section>
 
     <!-- 主要内容区域（原主页内容） -->
     <div id="main-content" class="content-section">
@@ -158,11 +161,11 @@
 
                     </div>
 
-                    <button onclick="prevSlide()" style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #4a148c; z-index: 10;">❮</button>
-                    <button onclick="nextSlide()" style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #4a148c; z-index: 10;">❯</button>
+                    <button onclick="prevSlide()" style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #1976d2; z-index: 10;">❮</button>
+                    <button onclick="nextSlide()" style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #1976d2; z-index: 10;">❯</button>
 
                     <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10;">
-                        <span class="carousel-dot active" onclick="goToSlide(0)" style="width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; border: 2px solid #4a148c;"></span>
+                        <span class="carousel-dot active" onclick="goToSlide(0)" style="width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; border: 2px solid #1976d2;"></span>
                         <span class="carousel-dot" onclick="goToSlide(1)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
                         <span class="carousel-dot" onclick="goToSlide(2)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
                         <span class="carousel-dot" onclick="goToSlide(3)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
