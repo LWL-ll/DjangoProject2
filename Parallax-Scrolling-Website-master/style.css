@@ -14,7 +14,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   /* 初始背景设为深色，与星空匹配 */
-  background-color: #2b1055; 
+  background-color: #f6f6f6;
   transition: background-color 0.1s ease; /* 添加过渡使颜色变化更平滑 */
 }
 
@@ -62,7 +62,7 @@ header ul li a {
 header ul li a:hover,
 header ul li a.active {
   background: #fff;
-  color: #2b1055;
+  color: #ffffff;
 }
 
 section {
@@ -85,7 +85,7 @@ section::before {
   width: 100%;
   height: 100px;
   /* 底部渐变遮罩，可以根据需要保留或移除，如果背景变白，这个深色遮罩可能需要调整 */
-  background: linear-gradient(to top, rgba(28, 5, 34, 0.8), transparent);
+  background: linear-gradient(to top, rgba(248, 247, 247, 0.8), transparent);
   z-index: 1000;
   pointer-events: none;
 }
@@ -114,7 +114,7 @@ section img#mountains_front {
   padding: 8px 30px;
   border-radius: 40px;
   background: #fff;
-  color: #2b1055;
+  color: #fcfcfd;
   font-size: 1.5em;
   z-index: 9;
   transform: translateY(100px);
@@ -133,7 +133,7 @@ section img#mountains_front {
 .sec h2 {
   font-size: 3.5em;
   margin-bottom: 10px;
-  color: #2b1055; /* 标题颜色 */
+  color: #3ab0e1; /* 标题颜色 */
 }
 
 .sec p {

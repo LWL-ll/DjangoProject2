@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>美食个性化推荐</title>
+    <title>个性化推荐</title>
     {% load static %}
+    <!-- Bootstrap 5 CSS -->
+    <link href="{% static 'js/bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
     <style>
-        /* 全局样式 - 蓝白底色+本地背景图配置 */
+        /* 全局样式 */
         * {
             margin: 0;
             padding: 0;
@@ -21,9 +23,42 @@
             line-height: 1.6;
             position: relative;
             min-height: 100vh;
+            padding-top: 90px;
         }
 
-        /* 背景遮罩层 - 降低透明度，先能看到背景图 */
+        /* 固定导航栏样式 */
+        .fixed-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10000;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.98);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .fixed-nav .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .fixed-nav a {
+            text-decoration: none;
+            font-size: 18px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .fixed-nav a.active {
+            color: #1e88e5;
+            font-weight: bold;
+        }
+
+        /* 背景遮罩层 */
         body::before {
             content: "";
             position: fixed;
@@ -31,7 +66,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(240, 247, 255, 0.3); /* 透明度调低，方便看背景 */
+            background-color: rgba(240, 247, 255, 0.3);
             z-index: -1;
         }
 
@@ -182,6 +217,9 @@
     </style>
 </head>
 <body>
+    <!-- 固定顶部导航栏 -->
+    {% include 'navbar.html' %}
+
     <div class="container">
         <!-- 页面头部 -->
         <div class="header">
