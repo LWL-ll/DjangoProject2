@@ -99,14 +99,14 @@
         <div class="wrapper">
             <!--logo-->
             <div class="logo">
-                <h1><a href="#" style="color: #1976d2;">校园美食</a></h1>
+                <h1><a href="#" style="color: #4a148c;">校园美食</a></h1>
             </div>
             <!-- 导航栏（类名daohang，和CSS对应） -->
             <div class="daohang">
                 <ul>
                     <li><a href="/auth/login/" id="loginLink" style="color: #1976d2;">登录</a></li>
                     <li><a href="#" class="active" style="color: #1976d2; background: rgba(25, 118, 210, 0.1);">首页</a></li>
-                    <li><a href="#" id="personalizeLink" style="color: #1976d2;">个性化</a></li>
+                    <li><a href="{% url 'personalize:gexinghua' %}" id="personalizeLink" style="text-decoration: none; font-size: 18px; color: #333; cursor: pointer;">个性化</a></li>
                     <li><a href="{% url 'community:recommend' %}" id="recommendLink" style="color: #1976d2;">推荐</a></li>
                     <li><a href="javascript:void(0)" id="bileiLink" style="color: #1976d2;">避雷</a></li>
                 </ul>
@@ -127,6 +127,12 @@
     </div>
 
     <!-- 视差滚动区域 -->
+    <section class="parallax-section" style="margin-top: 80px;">
+        <img src="{% static 'parallax-images/stars.png' %}" id="stars" alt="星空">
+        <img src="{% static 'parallax-images/mountains_behind.png' %}" id="mountains_behind" alt="远山">
+        <a href="#main-content" id="explore-btn">探索美食</a>
+        <img src="{% static 'parallax-images/mountains_front.png' %}" id="mountains_front" alt="近山">
+    </section>
 
     <!-- 主要内容区域（原主页内容） -->
     <div id="main-content" class="content-section">
@@ -332,52 +338,17 @@
         if (bileiLink) {
             bileiLink.addEventListener('click', function() {
                 if (isLoggedIn) {
-                    // 已登录，跳转到避雷页面
                     window.location.href = '/community/bilei/';
                 } else {
-                    // 未登录，跳转到登录页面
                     alert('请先登录后再访问避雷页面');
                     window.location.href = '/auth/login/';
                 }
             });
         }
 
-        // 个性化链接点击事件
-        if (personalizeLink) {
-            personalizeLink.addEventListener('click', function() {
-                if (!isLoggedIn) {
-                    alert('请先登录后再访问个性化页面');
-                    window.location.href = '/auth/login/';
-                } else {
-                    alert('个性化页面正在开发中...');
-                }
-            });
-        }
+        // 个性化链接已改为直接跳转，删除原有的alert提示
 
         // 退出登录
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', function() {
-                if (confirm('确定要退出登录吗？')) {
-                    fetch('/auth/user-logout/', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRFToken': getCookie('csrftoken')
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('已退出登录');
-                            // 刷新页面更新状态
-                            location.reload();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('退出登录失败:', error);
-                    });
-                }
-            });
-        }
 
         // 获取 CSRF Token
         function getCookie(name) {

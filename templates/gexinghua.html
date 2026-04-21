@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美食个性化推荐</title>
+    {% load static %}
+    <style>
+        /* 全局样式 - 蓝白底色+本地背景图配置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background: url("{% static 'tu/beijing.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* 背景遮罩层 - 降低透明度，先能看到背景图 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(240, 247, 255, 0.3); /* 透明度调低，方便看背景 */
+            z-index: -1;
+        }
+
+        /* 页面容器 */
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* 头部标题 */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #fff;
+        }
+
+        /* 卡片样式 - 白色半透明卡片 */
+        .card {
+            background: rgba(255, 255, 255, 0.9); /* 白色半透明 */
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(30, 136, 229, 0.2);
+            border: 1px solid #bbdefb;
+            backdrop-filter: blur(5px); /* 毛玻璃效果，更美观 */
+        }
+
+        .card h2 {
+            color: #1976d2;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #1565c0;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #90caf9;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #1e88e5;
+            box-shadow: 0 0 5px rgba(30, 136, 229, 0.3);
+            background: white;
+            outline: none;
+        }
+
+        /* 偏好选择布局 */
+        .preference-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .preference-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: block;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(30, 136, 229, 0.3);
+        }
+
+        .btn:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
+        }
+
+        /* 推荐结果区域 */
+        .result-area {
+            display: none;
+        }
+
+        .food-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .food-item {
+            flex: 1;
+            min-width: 280px;
+            background: rgba(248, 251, 255, 0.9);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #e3f2fd;
+            backdrop-filter: blur(3px);
+        }
+
+        .food-item h3 {
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+
+        .food-item p {
+            color: #666;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .preference-row {
+                flex-direction: column;
+            }
+            .header h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面头部 -->
+        <div class="header">
+            <h1>🍽️ 美食个性化推荐</h1>
+            <p>填写你的口味偏好，为你专属推荐美食</p>
+        </div>
+
+        <!-- 信息填写卡片 -->
+        <div class="card">
+            <h2>📋 填写你的饮食偏好</h2>
+            <form id="foodForm">
+                <div class="preference-row">
+                    <div class="form-group preference-item">
+                        <label>口味偏好</label>
+                        <select id="taste" required>
+                            <option value="">请选择口味</option>
+                            <option value="甜">甜味</option>
+                            <option value="辣">辣味</option>
+                            <option value="酸">酸味</option>
+                            <option value="咸">咸味</option>
+                            <option value="清淡">清淡</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group preference-item">
+                        <label>菜系偏好</label>
+                        <select id="cuisine" required>
+                            <option value="">请选择菜系</option>
+                            <option value="川菜">川菜</option>
+                            <option value="粤菜">粤菜</option>
+                            <option value="湘菜">湘菜</option>
+                            <option value="苏菜">苏菜</option>
+                            <option value="西餐">西餐</option>
+                            <option value="日料">日料</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 预算选择 -->
+                    <div class="form-group preference-item">
+                        <label>人均预算</label>
+                        <select id="budget" required>
+                            <option value="">请选择预算</option>
+                            <option value="经济型">经济型（50元内）</option>
+                            <option value="舒适型">舒适型（50-150元）</option>
+                            <option value="品质型">品质型（150元以上）</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>饮食禁忌/过敏</label>
+                    <input type="text" id="allergy" placeholder="如：不吃香菜、海鲜过敏、素食等">
+                </div>
+
+                <div class="form-group">
+                    <label>其他需求（可选）</label>
+                    <textarea id="demand" rows="3" placeholder="请输入你的其他美食需求"></textarea>
+                </div>
+
+                <button type="submit" class="btn">生成专属美食推荐</button>
+            </form>
+        </div>
+
+        <!-- 推荐结果卡片 -->
+        <div class="card result-area" id="resultCard">
+            <h2>✨ 为你专属推荐的美食</h2>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // 美食推荐数据
+        const foodData = {
+            // 甜味推荐
+            "甜_川菜": ["冰糖肘子", "鱼香肉丝（甜辣版）", "蜜汁排骨"],
+            "甜_粤菜": ["叉烧肉", "双皮奶", "蜜汁叉烧包"],
+            "甜_湘菜": ["糖油粑粑", "冰糖湘莲", "甜酒冲蛋"],
+            "甜_苏菜": ["松鼠桂鱼", "桂花糖藕", "无锡酱排骨"],
+            "甜_西餐": ["提拉米苏", "芝士蛋糕", "奶油意面"],
+            "甜_日料": ["大福", "抹茶甜品", "鲷鱼烧"],
+            
+            // 辣味推荐
+            "辣_川菜": ["麻婆豆腐", "水煮鱼", "辣子鸡"],
+            "辣_粤菜": ["豉椒排骨", "辣炒花甲", "川味肠粉"],
+            "辣_湘菜": ["剁椒鱼头", "小炒黄牛肉", "口味虾"],
+            "辣_苏菜": ["麻辣小龙虾", "香辣蟹", "辣味卤味"],
+            "辣_西餐": ["墨西哥辣鸡肉卷", "辣味披萨", "香辣鸡翅"],
+            "辣_日料": ["地狱拉面", "麻辣寿司", "辣味关东煮"],
+            
+            // 清淡推荐
+            "清淡_川菜": ["清炒时蔬", "清汤丸子", "蒸水蛋"],
+            "清淡_粤菜": ["白切鸡", "清蒸鲈鱼", "老火靓汤"],
+            "清淡_湘菜": ["清炖土鸡", "蒜蓉菜心", "蒸蛋羹"],
+            "清淡_苏菜": ["清炖狮子头", "太湖银鱼", "文思豆腐"],
+            "清淡_西餐": ["蔬菜沙拉", "奶油蘑菇汤", "煎鳕鱼"],
+            "清淡_日料": ["刺身拼盘", "味增汤", "茶泡饭"]
+        };
+
+        // 表单提交事件
+        document.getElementById('foodForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const taste = document.getElementById('taste').value;
+            const cuisine = document.getElementById('cuisine').value;
+            const budget = document.getElementById('budget').value;
+            const allergy = document.getElementById('allergy').value;
+            const demand = document.getElementById('demand').value;
+
+            const key = `${taste}_${cuisine}`;
+            const foods = foodData[key] || ["招牌炒饭", "时令蔬菜", "营养汤品"];
+            
+            let html = `
+                <p><strong>根据你的偏好</strong>，为你推荐以下美食：</p>
+                <div class="food-list">
+            `;
+            
+            foods.forEach(food => {
+                html += `
+                    <div class="food-item">
+                        <h3>${food}</h3>
+                        <p>口味：${taste} | 菜系：${cuisine} | 预算：${budget}</p>
+                        ${allergy ? `<p>适配：已避开${allergy}</p>` : ''}
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            document.getElementById('resultContent').innerHTML = html;
+            document.getElementById('resultCard').style.display = 'block';
+            
+            document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
+
+            saveUserPreference(taste, cuisine, budget, allergy, demand);
+        });
+
+        function saveUserPreference(taste, cuisine, budget, allergy, demand) {
+            fetch('/personalize/api/save/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    taste: taste,
+                    cuisine: cuisine,
+                    budget: budget,
+                    allergy: allergy,
+                    demand: demand
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('偏好已保存:', data.message);
+                } else {
+                    console.error('保存失败:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('保存失败:', error);
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        window.addEventListener('load', function() {
+            loadUserPreference();
+        });
+
+        function loadUserPreference() {
+            fetch('/personalize/api/get/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('taste').value = data.data.taste;
+                    document.getElementById('cuisine').value = data.data.cuisine;
+                    document.getElementById('budget').value = data.data.budget;
+                    document.getElementById('allergy').value = data.data.allergy;
+                    document.getElementById('demand').value = data.data.demand;
+                }
+            })
+            .catch(error => {
+                console.error('加载偏好失败:', error);
+            });
+        }
+
+    </script>
+</body>
+</html>

@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include('home.urls')),
     path('auth/', include("lauth.urls")),
     path('community/', include('community.urls')),
+    path('personalize/', include('personalize.urls')),
 ]
