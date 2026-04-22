@@ -18,42 +18,11 @@
         body {
             background-color: #f7f8fa;
             padding: 20px;
-            padding-top: 90px;
+            padding-top: 80px;
         }
 
-        /* 固定导航栏样式 */
-        .fixed-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 10000;
-            padding: 15px 30px;
-            background: rgba(255,255,255,0.98);
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        }
-
-        .fixed-nav .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            gap: 35px;
-            align-items: center;
-        }
-
-        .fixed-nav a {
-            text-decoration: none;
-            font-size: 18px;
-            color: #333;
-            cursor: pointer;
-        }
-
-        .fixed-nav a.active {
-            color: #3ab0e1;
-            font-weight: bold;
-        }
-
-        .container {
+        /* 页面主容器（改名避免与Bootstrap的.container冲突） */
+        .main-container {
             max-width: 900px;
             margin: 0 auto;
         }
@@ -250,7 +219,7 @@
     <!-- 固定顶部导航栏 -->
     {% include 'navbar.html' %}
 
-    <div class="container">
+    <div class="main-container">
         <div class="header">
             <h1>🍔 美食避雷墙</h1>
             <p>大家一起曝光难吃、坑人、踩雷的美食店！可评论、可点赞、可看浏览量</p>
@@ -294,9 +263,11 @@
         <div id="list"></div>
     </div>
 
+    <!-- Bootstrap JS -->
+    <script src="{% static 'js/bootstrap5/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap5/bootstrap.min.js' %}"></script>
     <script>
         let imgList = [];
-        let postId = 0;
 
         // 图片预览
         function previewImg() {

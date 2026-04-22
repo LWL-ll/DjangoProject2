@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>美食平台</title>
+    {% load static %}
+    <!-- Bootstrap 5 CSS -->
+    <link href="{% static 'js/bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,10 +16,11 @@
         }
 
         body {
-            background: url('背景.jpg') no-repeat center center fixed;
+            background: url("{% static 'tu/beijing.jpg' %}") no-repeat center center fixed;
             background-size: cover;
             background-color: #f0f7ff;
             color: #333;
+            padding-top: 100px;
         }
 
         .page {
@@ -27,28 +31,6 @@
 
         .page.active {
             display: block;
-        }
-
-        .nav {
-            background: rgba(255,255,255,0.95);
-            padding: 15px 30px;
-            border-radius: 10px;
-            display: flex;
-            gap: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .nav a {
-            text-decoration: none;
-            font-size: 18px;
-            color: #333;
-            cursor: pointer;
-        }
-
-        .nav a.active {
-            color: #3688FF;
-            font-weight: bold;
         }
 
         .title {
@@ -188,7 +170,7 @@
             border-radius: 15px;
             padding: 30px;
             max-width: 1000px;
-            margin: 0 auto;
+            margin: 40px auto 0;
         }
 
         .img-grid {
@@ -214,17 +196,11 @@
 </head>
 <body>
 
+<!-- 固定顶部导航栏 -->
+{% include 'navbar.html' %}
+
 <!-- 首页 -->
 <div id="page-home" class="page active">
-    <div class="nav">
-        <a class="active" onclick="go('home')">首页</a>
-        <a onclick="go('list1')">快餐汉堡</a>
-        <a onclick="go('list2')">奶茶饮品</a>
-        <a onclick="go('list3')">中式正餐</a>
-        <a onclick="go('list4')">甜品糕点</a>
-        <a onclick="go('list5')">特色小吃</a>
-        <a onclick="go('list6')">轻食减脂</a>
-    </div>
 
     <div class="home-box">
         <button class="post-btn" onclick="showPost()">+ 发布帖子</button>
@@ -261,10 +237,6 @@
 
 <!-- 分类1：快餐汉堡 -->
 <div id="page-list1" class="page">
-    <div class="nav">
-        <a onclick="go('home')">首页</a>
-        <a class="active">快餐汉堡</a>
-    </div>
     <div class="list-box">
         <h2 class="title">快餐汉堡推荐</h2>
         <div class="img-grid">
@@ -277,10 +249,6 @@
 
 <!-- 分类2：奶茶饮品 -->
 <div id="page-list2" class="page">
-    <div class="nav">
-        <a onclick="go('home')">首页</a>
-        <a class="active">奶茶饮品</a>
-    </div>
     <div class="list-box">
         <h2 class="title">奶茶饮品推荐</h2>
         <div class="img-grid">
@@ -293,10 +261,6 @@
 
 <!-- 分类3：中式正餐 -->
 <div id="page-list3" class="page">
-    <div class="nav">
-        <a onclick="go('home')">首页</a>
-        <a class="active">中式正餐</a>
-    </div>
     <div class="list-box">
         <h2 class="title">中式正餐推荐</h2>
         <div class="img-grid">
@@ -309,10 +273,6 @@
 
 <!-- 分类4：甜品糕点 -->
 <div id="page-list4" class="page">
-    <div class="nav">
-        <a onclick="go('home')">首页</a>
-        <a class="active">甜品糕点</a>
-    </div>
     <div class="list-box">
         <h2 class="title">甜品糕点推荐</h2>
         <div class="img-grid">
@@ -325,10 +285,6 @@
 
 <!-- 分类5：特色小吃 -->
 <div id="page-list5" class="page">
-    <div class="nav">
-        <a onclick="go('home')">首页</a>
-        <a class="active">特色小吃</a>
-    </div>
     <div class="list-box">
         <h2 class="title">特色小吃推荐</h2>
         <div class="img-grid">
@@ -341,10 +297,6 @@
 
 <!-- 分类6：轻食减脂 -->
 <div id="page-list6" class="page">
-    <div class="nav">
-        <a onclick="go('home')">首页</a>
-        <a class="active">轻食减脂</a>
-    </div>
     <div class="list-box">
         <h2 class="title">轻食减脂推荐</h2>
         <div class="img-grid">
@@ -378,6 +330,9 @@
     </div>
 </div>
 
+<!-- Bootstrap JS -->
+<script src="{% static 'js/bootstrap5/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap5/bootstrap.min.js' %}"></script>
 <script>
     function go(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
