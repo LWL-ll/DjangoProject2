@@ -1,7 +1,0 @@
-[client]
-host =  47.109.137.204
-port = 3306
-database = django1
-user = django1
-password = m6GNxEebJAtmiWbB
-default-character-set = utf8
