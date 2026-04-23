@@ -125,6 +125,9 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
+    BASE_DIR / 'community' / 'static',
+    BASE_DIR / 'home' / 'static',
+    BASE_DIR / 'personalize' / 'static',
 ]
 
 SESSION_COOKIE_AGE = 5 * 24 * 60 * 60  # 5天（秒数）

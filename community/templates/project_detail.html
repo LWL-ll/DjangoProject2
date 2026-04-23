@@ -16,7 +16,7 @@
         }
 
         body {
-            background: url("{% static 'tu/beijing.jpg' %}") no-repeat center center fixed;
+            background: url("{% static 'img/dishes/background.jpg' %}") no-repeat center center fixed;
             background-size: cover;
             background-color: #f0f7ff;
             color: #333;
@@ -197,7 +197,7 @@
 <body>
 
 <!-- 固定顶部导航栏 -->
-{% include 'navbar.html' %}
+{% include 'common/navbar.html' %}
 
 <!-- 首页 -->
 <div id="page-home" class="page active">
@@ -240,9 +240,9 @@
     <div class="list-box">
         <h2 class="title">快餐汉堡推荐</h2>
         <div class="img-grid">
-            <div class="img-card"><img src="快餐1.jpg"></div>
-            <div class="img-card"><img src="快餐2.jpg"></div>
-            <div class="img-card"><img src="快餐3.jpg"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/fast_food_1.jpg' %}" alt="快餐1"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/fast_food_2.jpg' %}" alt="快餐2"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/fast_food_3.jpg' %}" alt="快餐3"></div>
         </div>
     </div>
 </div>
@@ -252,9 +252,9 @@
     <div class="list-box">
         <h2 class="title">奶茶饮品推荐</h2>
         <div class="img-grid">
-            <div class="img-card"><img src="奶茶1.jpg"></div>
-            <div class="img-card"><img src="奶茶2.jpg"></div>
-            <div class="img-card"><img src="奶茶3.jpg"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/milk_tea_1.jpg' %}" alt="奶茶1"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/milk_tea_2.jpg' %}" alt="奶茶2"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/milk_tea_3.jpg' %}" alt="奶茶3"></div>
         </div>
     </div>
 </div>
@@ -264,9 +264,9 @@
     <div class="list-box">
         <h2 class="title">中式正餐推荐</h2>
         <div class="img-grid">
-            <div class="img-card"><img src="中餐1.jpg"></div>
-            <div class="img-card"><img src="中餐2.jpg"></div>
-            <div class="img-card"><img src="中餐3.jpg"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/chinese_food_1.jpg' %}" alt="中餐1"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/chinese_food_2.jpg' %}" alt="中餐2"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/chinese_food_3.jpg' %}" alt="中餐3"></div>
         </div>
     </div>
 </div>
@@ -276,9 +276,9 @@
     <div class="list-box">
         <h2 class="title">甜品糕点推荐</h2>
         <div class="img-grid">
-            <div class="img-card"><img src="甜品1.jpg"></div>
-            <div class="img-card"><img src="甜品2.jpg"></div>
-            <div class="img-card"><img src="甜品3.jpg"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/dessert_1.jpg' %}" alt="甜品1"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/dessert_2.jpg' %}" alt="甜品2"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/dessert_3.jpg' %}" alt="甜品3"></div>
         </div>
     </div>
 </div>
@@ -288,9 +288,9 @@
     <div class="list-box">
         <h2 class="title">特色小吃推荐</h2>
         <div class="img-grid">
-            <div class="img-card"><img src="小吃1.jpg"></div>
-            <div class="img-card"><img src="小吃2.jpg"></div>
-            <div class="img-card"><img src="奶茶4.jpg"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/snack_1.jpg' %}" alt="小吃1"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/snack_2.jpg' %}" alt="小吃2"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/milk_tea_4.jpg' %}" alt="小吃3"></div>
         </div>
     </div>
 </div>
@@ -300,9 +300,9 @@
     <div class="list-box">
         <h2 class="title">轻食减脂推荐</h2>
         <div class="img-grid">
-            <div class="img-card"><img src="轻食1.jpg"></div>
-            <div class="img-card"><img src="轻食2.jpg"></div>
-            <div class="img-card"><img src="轻食3.jpg"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/light_food_1.jpg' %}" alt="轻食1"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/light_food_2.jpg' %}" alt="轻食2"></div>
+            <div class="img-card"><img src="{% static 'img/backgrounds/light_food_3.jpg' %}" alt="轻食3"></div>
         </div>
     </div>
 </div>

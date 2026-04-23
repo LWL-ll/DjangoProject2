@@ -1,0 +1,50 @@
+# Python 编译文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Django 相关
+db.sqlite3
+db.sqlite3-journal
+
+# IDE 配置
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 敏感配置文件（包含数据库密码）
+my.cnf
+.env
+*.env.local
+*.env.production
+
+# 静态文件收集目录（生产环境使用）
+staticfiles/
+
+# 日志文件
+*.log
+logs/
+
+# 虚拟环境
+venv/
+env/
+.venv/
+ENV/
+
+# 测试覆盖报告
+htmlcov/
+.coverage
+.coverage.*
+
+# 类型检查
+.mypy_cache/
+.dmypy.json
+dmypy.json

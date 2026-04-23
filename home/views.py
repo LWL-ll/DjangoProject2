@@ -14,7 +14,7 @@ def index(request):
         request: HTTP 请求对象
 
     Returns:
-        HttpResponse: 渲染后的 index2.html 页面
+        HttpResponse: 渲染后的 parallax.html 页面
     """
     return render(request, 'index.html')
 
@@ -80,6 +80,6 @@ def bilei(request):
         request: HTTP 请求对象
 
     Returns:
-        HttpResponse: 渲染后的 bilei tiezi.html 页面
+        HttpResponse: 渲染后的 bilei_post.html 页面
     """
-    return render(request, 'bilei tiezi.html')
+    return render(request, 'bilei_post.html')
