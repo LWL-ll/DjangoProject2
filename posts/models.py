@@ -209,6 +209,3 @@ class PostView(models.Model):
     def __str__(self):
         user_info = self.user.username if self.user else '匿名用户'
         return f'{user_info} 浏览了 {self.post.title}'
-from django.db import models
-
-# Create your models here.

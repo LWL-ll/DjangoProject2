@@ -32,20 +32,6 @@ def bilei_page(request):
 
 
 @login_required
-def recommend_page(request):
-    """
-    显示推荐帖子页面
-    
-    Args:
-        request: HTTP 请求对象
-    
-    Returns:
-        HttpResponse: 渲染后的推荐页面
-    """
-    return render(request, 'project_detail.html')
-
-
-@login_required
 def tuijian_page(request):
     """
     显示推荐墙页面（发布推荐帖子）

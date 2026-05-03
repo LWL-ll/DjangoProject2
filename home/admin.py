@@ -16,6 +16,3 @@ class BannerAdmin(admin.ModelAdmin):
     list_editable = ['sort_order', 'is_active']
     list_filter = ['is_active']
     search_fields = ['title', 'description']
-from django.contrib import admin
-
-# Register your models here.
