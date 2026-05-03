@@ -36,14 +36,11 @@ def post_list(request):
     search_query = request.GET.get('search', '')
     sort_by = request.GET.get('sort', 'latest')
 
-    # 基础查询：只显示已发布的帖子
     posts = Post.objects.filter(is_published=True)
 
-    # 按类型筛选
     if post_type != 'all':
         posts = posts.filter(post_type=post_type)
 
-    # 搜索功能
     if search_query:
         posts = posts.filter(
             Q(title__icontains=search_query) |
@@ -51,7 +48,6 @@ def post_list(request):
             Q(author__username__icontains=search_query)
         )
 
-    # 排序
     if sort_by == 'hot':
         posts = posts.order_by('-views', '-likes')
     elif sort_by == 'likes':
@@ -59,25 +55,25 @@ def post_list(request):
     else:
         posts = posts.order_by('-is_top', '-created_at')
 
-    # 添加统计信息
     posts = posts.annotate(
         image_count=Count('images'),
         comment_count=Count('comments')
     )
 
-    # 分页
     paginator = Paginator(posts, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     context = {
         'page_obj': page_obj,
+        'category_name': '全部帖子',
+        'category': 'all',
+        'sort_by': sort_by,
         'post_type': post_type,
         'search_query': search_query,
-        'sort_by': sort_by,
         'current_path': request.path,
     }
-    return render(request, 'posts/post_list.html', context)
+    return render(request, 'category_list.html', context)
 
 
 def category_list(request, category):
@@ -85,13 +81,11 @@ def category_list(request, category):
     category_name = CATEGORY_NAMES.get(category, '未知分类')
     sort_by = request.GET.get('sort', 'latest')
     
-    # 查询该分类的帖子
     posts = Post.objects.filter(
         is_published=True,
         category=category
     )
     
-    # 排序
     if sort_by == 'hot':
         posts = posts.order_by('-views', '-likes')
     elif sort_by == 'likes':
@@ -99,13 +93,11 @@ def category_list(request, category):
     else:
         posts = posts.order_by('-is_top', '-created_at')
     
-    # 添加统计信息
     posts = posts.annotate(
         image_count=Count('images'),
         comment_count=Count('comments')
     )
     
-    # 分页
     paginator = Paginator(posts, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -164,7 +156,7 @@ def post_detail(request, post_id):
         'comment_page_obj': comment_page_obj,
         'user_liked': user_liked,
     }
-    return render(request, 'posts/post_detail.html', context)
+    return render(request, 'post_detail.html', context)
 
 
 @auth_login_required
@@ -406,16 +398,30 @@ def api_create_post(request):
         category = request.POST.get('category')
         content = request.POST.get('content')
         post_type = request.POST.get('post_type', 'recommend')
+        shop_addr = request.POST.get('shop_addr', '').strip()
+        level_text = request.POST.get('level', '').strip()
         
         if not title or not content or not category:
             return JsonResponse({'success': False, 'error': '请填写完整信息'})
+        
+        level_map = {
+            '强烈推荐': 'highly-recommend',
+            '非常好吃': 'recommend',
+            '还不错': 'recommend',
+            '性价比高': 'normal',
+            '环境好': 'normal'
+        }
+        level_value = level_map.get(level_text, '')
         
         post = Post.objects.create(
             title=title,
             content=content,
             category=category,
             post_type=post_type,
-            author=request.user
+            author=request.user,
+            shop_name=title,
+            shop_address=shop_addr,
+            level=level_value
         )
         
         images = request.FILES.getlist('images')

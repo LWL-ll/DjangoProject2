@@ -1,9 +1,10 @@
+{% load static %}
 <!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manhattan Breakfast</title>
+    <title>{{ post.title }} - 校园美食</title>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500&family=Allura&display=swap");
 
@@ -35,7 +36,7 @@
       .page {
         min-height: 100vh;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+        grid-template-columns: 1fr minmax(300px, 400px);
         background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)) 0 0 / 100% 100%,
           repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0 2px, rgba(0, 0, 0, 0.02) 2px 4px);
       }
@@ -44,61 +45,121 @@
         position: relative;
         display: grid;
         place-items: center;
-        padding: clamp(24px, 4vw, 48px);
+        padding: 0;
       }
 
       .hero-media {
-        width: min(980px, 90%);
-        aspect-ratio: 4 / 3;
+        width: 100%;
+        height: 100vh;
         background: var(--stone);
-        border-radius: 2px;
         overflow: hidden;
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
         position: relative;
       }
 
       .hero-media img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
+        display: block;
+        background: #e8f4f8;
+      }
+
+      .carousel-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .carousel-slide {
+        display: none;
+        width: 100%;
+        height: 100%;
+      }
+
+      .carousel-slide.active {
         display: block;
       }
 
-      .hero-badge {
-        position: absolute;
-        right: clamp(18px, 4vw, 34px);
-        bottom: clamp(18px, 3vw, 32px);
-        width: 72px;
-        height: 72px;
-        border-radius: 16px;
-        background: rgba(36, 34, 30, 0.55);
-        border: 2px solid rgba(255, 255, 255, 0.7);
-        display: grid;
-        place-items: center;
-        color: #fff;
-        font-family: "Oswald", sans-serif;
-        font-size: 22px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        backdrop-filter: blur(6px);
+      .carousel-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #e8f4f8;
       }
 
-      .hero-badge::before {
-        content: "";
+      .carousel-btn {
         position: absolute;
-        width: 12px;
-        height: 12px;
-        border-top: 2px solid rgba(255, 255, 255, 0.85);
-        border-left: 2px solid rgba(255, 255, 255, 0.85);
-        top: 12px;
-        left: 12px;
-        transform: rotate(45deg);
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.8);
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 24px;
+        color: var(--ink);
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+
+      .carousel-btn:hover {
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .carousel-btn.prev {
+        left: 20px;
+      }
+
+      .carousel-btn.next {
+        right: 20px;
+      }
+
+      .carousel-indicators {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+        z-index: 10;
+      }
+
+      .carousel-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .carousel-indicator.active {
+        background: rgba(255, 255, 255, 1);
+        transform: scale(1.2);
+      }
+
+      .carousel-counter {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        z-index: 10;
       }
 
       .details {
         background: #fff;
         border-left: 1px solid rgba(0, 0, 0, 0.08);
-        padding: clamp(26px, 4vw, 46px) clamp(24px, 4vw, 48px);
+        padding: 40px 30px;
         overflow-y: auto;
         max-height: 100vh;
       }
@@ -112,98 +173,125 @@
         border-radius: 999px;
       }
 
-      .intro {
-        position: relative;
-        padding-bottom: 18px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      .back-link {
+        display: inline-block;
+        margin-bottom: 30px;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.2s;
+      }
+
+      .back-link:hover {
+        color: var(--ink);
       }
 
       .title {
-        margin: 0 0 12px;
+        margin: 0 0 20px;
         font-family: "Oswald", sans-serif;
-        font-size: clamp(28px, 3.2vw, 38px);
+        font-size: clamp(26px, 3vw, 36px);
         letter-spacing: 0.04em;
         text-transform: uppercase;
       }
 
-      .intro p {
-        margin: 0 0 10px;
+      .meta-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        font-size: 14px;
         color: var(--muted);
+      }
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .info-section {
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      .info-section:last-child {
+        border-bottom: none;
+      }
+
+      .info-item {
+        margin-bottom: 20px;
+      }
+
+      .info-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-item h3 {
+        margin: 0 0 10px;
+        font-family: "Work Sans", sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .info-item p {
+        margin: 0;
+        padding-left: 28px;
+        color: var(--ink);
         line-height: 1.6;
         font-size: 15px;
       }
 
-      .avatar {
-        position: absolute;
-        right: -18px;
-        top: 64px;
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        background: radial-gradient(circle at 40% 35%, #f6d3b6, #edb287 60%, #c97f53 100%);
-        border: 3px solid #fff;
-        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
+      .info-item .category-tag,
+      .info-item .type-tag,
+      .info-item .level-tag {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 15px;
+        margin-right: 10px;
+        border-left: 3px solid var(--gold);
       }
 
-      .avatar::after {
-        content: "";
-        position: absolute;
-        inset: 9px 10px 14px;
-        border-radius: 14px 14px 18px 18px;
-        background: radial-gradient(circle at 35% 40%, #2c2620 0%, #2c2620 35%, transparent 36%),
-          radial-gradient(circle at 68% 40%, #2c2620 0%, #2c2620 35%, transparent 36%),
-          radial-gradient(circle at 50% 70%, #2c2620 0%, #2c2620 40%, transparent 41%);
-        opacity: 0.9;
+      .info-item .category-tag {
+        background: var(--paper);
+        color: var(--ink);
       }
 
-      .section {
-        padding: 24px 0 4px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      .info-item .type-tag {
+        background: #e3f2fd;
+        color: #1976d2;
+        border-left: 3px solid #1976d2;
       }
 
-      .section h3 {
-        margin: 0 0 12px;
-        font-family: "Oswald", sans-serif;
+      .info-item .level-tag {
+        background: #fff3e0;
+        color: #f57c00;
+        border-left: 3px solid #f57c00;
+      }
+
+      .address-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
         font-size: 14px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-
-      .section p {
-        margin: 0 0 14px;
-        color: var(--muted);
-        line-height: 1.7;
-        font-size: 15px;
-      }
-
-      .founder {
-        padding: 26px 0 40px;
-      }
-
-      .founder .label {
-        font-family: "Allura", cursive;
-        color: var(--gold);
-        font-size: 28px;
-        margin-bottom: -6px;
-      }
-
-      .founder .headline {
-        font-family: "Oswald", sans-serif;
-        font-size: clamp(26px, 2.8vw, 34px);
-        text-transform: uppercase;
-        margin: 0 0 14px;
-      }
-
-      .founder p {
-        margin: 0 0 14px;
-        color: var(--muted);
-        line-height: 1.7;
-        font-size: 15px;
+        margin-top: 10px;
       }
 
       @media (max-width: 980px) {
         .page {
           grid-template-columns: 1fr;
+        }
+
+        .hero-media {
+          height: 50vh;
         }
 
         .details {
@@ -213,55 +301,174 @@
           border-top: 1px solid rgba(0, 0, 0, 0.08);
         }
 
-        .avatar {
-          right: 0;
+        .carousel-btn {
+          width: 40px;
+          height: 40px;
+          font-size: 20px;
+        }
+
+        .carousel-btn.prev {
+          left: 10px;
+        }
+
+        .carousel-btn.next {
+          right: 10px;
         }
       }
     </style>
   </head>
   <body>
+
     <main class="page">
-      <section class="hero" aria-label="早餐主图">
+      <section class="hero" aria-label="帖子主图">
         <div class="hero-media">
-          <img src="./reference.png" alt="Manhattan breakfast dish" />
-          <div class="hero-badge">ABC</div>
+          {% if images %}
+          <div class="carousel-container" id="carousel">
+            {% for image in images %}
+            <div class="carousel-slide {% if forloop.first %}active{% endif %}">
+              <img src="{{ image.image.url }}" alt="{{ post.title }} - 图片{{ forloop.counter }}" />
+            </div>
+            {% endfor %}
+
+            {% if images.count > 1 %}
+            <button class="carousel-btn prev" onclick="changeSlide(-1)">❮</button>
+            <button class="carousel-btn next" onclick="changeSlide(1)">❯</button>
+
+            <div class="carousel-counter">
+              <span id="currentSlide">1</span> / {{ images.count }}
+            </div>
+
+            <div class="carousel-indicators">
+              {% for image in images %}
+              <div class="carousel-indicator {% if forloop.first %}active{% endif %}"
+                   onclick="goToSlide({{ forloop.counter0 }})"></div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          {% elif post.cover_image %}
+          <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" />
+          {% else %}
+          <img src="{% static 'community/img/backgrounds/fast_food_1.jpg' %}" alt="默认图片" />
+          {% endif %}
         </div>
       </section>
-      <aside class="details" aria-label="早餐说明">
-        <div class="intro">
-          <h1 class="title">MANHATTAN BREAKFAST</h1>
-          <p>
-            A refined and flavorful breakfast inspired by city mornings, combining fresh ingredients and hearty bread.
-            Perfect for a balanced and satisfying start to your day.
-          </p>
-          <p>
-            Freshly curated ingredients, slow-prepared textures, and a bright citrus finish to wake up every bite.
-          </p>
-          <span class="avatar" aria-hidden="true"></span>
+      <aside class="details" aria-label="帖子说明">
+        <a href="javascript:history.back()" class="back-link">← 返回列表</a>
+
+        <h1 class="title">{{ post.title }}</h1>
+
+        <div class="info-section">
+          {% if post.category %}
+          <div class="info-item">
+            <h3>🍔 美食分类</h3>
+            <p>
+              <span class="category-tag">{{ post.get_category_display }}</span>
+              <span class="type-tag">{{ post.get_post_type_display }}</span>
+            </p>
+          </div>
+          {% endif %}
+
+          {% if post.shop_name %}
+          <div class="info-item">
+            <h3>🏪 店铺名称</h3>
+            <p>{{ post.shop_name }}</p>
+          </div>
+          {% endif %}
+
+          {% if post.shop_address %}
+          <div class="info-item">
+            <h3>📍 店铺位置</h3>
+            <p>{{ post.shop_address }}</p>
+          </div>
+          {% endif %}
+
+          {% if post.level %}
+          <div class="info-item">
+            <h3>⭐ 推荐等级</h3>
+            <p><span class="level-tag">{{ post.get_level_display }}</span></p>
+          </div>
+          {% endif %}
+
+          {% if post.content %}
+          <div class="info-item">
+            <h3> 推荐理由</h3>
+            <p>{{ post.content|linebreaksbr }}</p>
+          </div>
+          {% endif %}
         </div>
 
-        <div class="section">
-          <h3>INGREDIENTS</h3>
-          <p>
-            Atlantic smoked salmon, organic skyr with fresh herbs, mesclun, organic soft-boiled egg, selection of
-            slices of organic bread and organic baguette.
-          </p>
+        <div class="meta-info">
+          <span class="meta-item">👤 {{ post.author.username }}</span>
+          <span class="meta-item">👁️ {{ post.views }}</span>
+          <span class="meta-item">❤️ {{ post.likes }}</span>
+          <span class="meta-item">💬 {{ post.comments_count }}</span>
+          <span class="meta-item">📅 {{ post.created_at|date:"Y-m-d" }}</span>
         </div>
 
-        <div class="founder">
-          <div class="label">Our founder</div>
-          <h2 class="headline">SIMPLICITY ACCORDING TO ALAIN</h2>
-          <p>
-            Alain Coumont was born into a family of cooks. His grandparents had a restaurant, his father was a chef,
-            and his aunt Simone was a talented pâtissier who baked tarts every Saturday for the whole family to devour
-            on Sunday.
-          </p>
-          <p>
-            When he was 6 years old, Alain began reading from the two cookbooks on the shelf at home. He taught
-            himself to cook by reading recipes and hints from famous chefs, then added his own signature touch.
-          </p>
-        </div>
       </aside>
     </main>
+
+    <script>
+      let currentSlideIndex = 0;
+      const slides = document.querySelectorAll('.carousel-slide');
+      const indicators = document.querySelectorAll('.carousel-indicator');
+      const counterElement = document.getElementById('currentSlide');
+
+      function showSlide(index) {
+        slides.forEach((slide, i) => {
+          slide.classList.remove('active');
+          if (indicators[i]) indicators[i].classList.remove('active');
+        });
+
+        slides[index].classList.add('active');
+        if (indicators[index]) indicators[index].classList.add('active');
+        if (counterElement) counterElement.textContent = index + 1;
+        currentSlideIndex = index;
+      }
+
+      function changeSlide(direction) {
+        let newIndex = currentSlideIndex + direction;
+        if (newIndex < 0) newIndex = slides.length - 1;
+        if (newIndex >= slides.length) newIndex = 0;
+        showSlide(newIndex);
+      }
+
+      function goToSlide(index) {
+        showSlide(index);
+      }
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') {
+          changeSlide(-1);
+        } else if (e.key === 'ArrowRight') {
+          changeSlide(1);
+        }
+      });
+
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      const carousel = document.getElementById('carousel');
+      if (carousel) {
+        carousel.addEventListener('touchstart', function(e) {
+          touchStartX = e.changedTouches[0].screenX;
+        });
+
+        carousel.addEventListener('touchend', function(e) {
+          touchEndX = e.changedTouches[0].screenX;
+          handleSwipe();
+        });
+      }
+
+      function handleSwipe() {
+        if (touchEndX < touchStartX - 50) {
+          changeSlide(1);
+        }
+        if (touchEndX > touchStartX + 50) {
+          changeSlide(-1);
+        }
+      }
+    </script>
   </body>
 </html>

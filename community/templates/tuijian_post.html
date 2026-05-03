@@ -295,16 +295,52 @@
 
         function previewImg() {
             let files = document.getElementById('imgFiles').files;
-            imgList = [];
+
             let preview = document.getElementById('imgPreview');
-            preview.innerHTML = '';
 
             for (let i = 0; i < files.length; i++) {
+                imgList.push(files[i]);
+
+                let imgWrapper = document.createElement('div');
+                imgWrapper.style.position = 'relative';
+                imgWrapper.style.display = 'inline-block';
+                imgWrapper.style.margin = '5px';
+
                 let img = document.createElement('img');
                 img.src = URL.createObjectURL(files[i]);
-                preview.appendChild(img);
-                imgList.push(files[i]);
+                img.style.width = '100px';
+                img.style.height = '100px';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '6px';
+                img.style.border = '1px solid #eee';
+
+                let deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = '×';
+                deleteBtn.style.position = 'absolute';
+                deleteBtn.style.top = '-5px';
+                deleteBtn.style.right = '-5px';
+                deleteBtn.style.width = '20px';
+                deleteBtn.style.height = '20px';
+                deleteBtn.style.borderRadius = '50%';
+                deleteBtn.style.border = 'none';
+                deleteBtn.style.background = '#ff4d4f';
+                deleteBtn.style.color = 'white';
+                deleteBtn.style.cursor = 'pointer';
+                deleteBtn.style.fontSize = '14px';
+                deleteBtn.style.lineHeight = '1';
+
+                let index = imgList.length - 1;
+                deleteBtn.onclick = function() {
+                    imgList.splice(index, 1);
+                    imgWrapper.remove();
+                };
+
+                imgWrapper.appendChild(img);
+                imgWrapper.appendChild(deleteBtn);
+                preview.appendChild(imgWrapper);
             }
+
+            document.getElementById('imgFiles').value = '';
         }
 
         function postCard() {

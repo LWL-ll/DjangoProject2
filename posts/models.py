@@ -21,6 +21,13 @@ class Post(models.Model):
         ('discussion', '讨论'),
     ]
     
+    # 推荐等级
+    LEVEL_CHOICES = [
+        ('highly-recommend', '强烈推荐'),
+        ('recommend', '推荐'),
+        ('normal', '一般'),
+    ]
+    
     # 分类
     category = models.CharField('分类', max_length=20, choices=CATEGORY_CHOICES, default='fast-food')
     
@@ -28,6 +35,11 @@ class Post(models.Model):
     title = models.CharField('标题', max_length=200)
     content = models.TextField('内容')
     post_type = models.CharField('帖子类型', max_length=20, choices=POST_TYPE_CHOICES, default='recommend')
+    
+    # 推荐帖子相关字段
+    shop_name = models.CharField('店铺名称', max_length=200, blank=True)
+    shop_address = models.CharField('店铺位置', max_length=300, blank=True)
+    level = models.CharField('推荐等级', max_length=20, choices=LEVEL_CHOICES, blank=True)
 
     # 作者信息
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='作者', related_name='posts')
