@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def bilei_page(request):
     """
-    显示避雷帖子页面
+    显示避雷帖子页面（包含发帖表单和帖子列表）
     
     Args:
         request: HTTP 请求对象
@@ -20,7 +20,14 @@ def bilei_page(request):
     Returns:
         HttpResponse: 渲染后的避雷页面
     """
-    return render(request, 'bilei_post.html')
+    from posts.models import Post
+    posts = Post.objects.filter(post_type='review').order_by('-created_at')
+    
+    context = {
+        'posts': posts,
+        'page_type': 'review'
+    }
+    return render(request, 'bilei_post.html', context)
 
 
 def recommend_page(request):

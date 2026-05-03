@@ -439,7 +439,8 @@ def api_create_post(request):
         
         return JsonResponse({
             'success': True,
-            'redirect_url': category_urls.get(category, '/posts/')
+            'redirect_url': category_urls.get(category, '/posts/'),
+            'message': f'发布成功！共上传 {len(images)} 张图片'
         })
         
     except Exception as e:
