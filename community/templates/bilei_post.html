@@ -21,6 +21,17 @@
             padding-top: 80px;
         }
 
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(240, 247, 255, 0.1);
+            z-index: -1;
+        }
+
         /* 页面主容器（改名避免与Bootstrap的.container冲突） */
         .main-container {
             max-width: 900px;
@@ -216,7 +227,7 @@
     <!-- 固定顶部导航栏 -->
     {% include 'common/navbar.html' %}
 
-    <div class="main-container">
+    <div class="main-container" style="position: relative; z-index: 1;">
         <div class="header">
             <h1>🍔 美食避雷墙</h1>
             <p>大家一起曝光难吃、坑人、踩雷的美食店！可评论、可点赞、可看浏览量</p>
