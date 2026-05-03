@@ -203,31 +203,31 @@
 <div id="page-home" class="page active">
 
     <div class="home-box">
-        <button class="post-btn" onclick="showPost()">+ 发布帖子</button>
+        <button class="post-btn" onclick="window.location.href='/community/tuijian/'">+ 发布帖子</button>
 
         <h2 class="title">美食分类</h2>
         <div class="cate-grid">
-            <div class="cate-item" onclick="go('list1')">
+            <div class="cate-item" onclick="window.location.href='/posts/fast-food/'" style="cursor: pointer;">
                 <div class="cate-icon">🍔</div>
                 <p>快餐汉堡</p>
             </div>
-            <div class="cate-item" onclick="go('list2')">
+            <div class="cate-item" onclick="window.location.href='/posts/milk-tea/'" style="cursor: pointer;">
                 <div class="cate-icon">🥤</div>
                 <p>奶茶饮品</p>
             </div>
-            <div class="cate-item" onclick="go('list3')">
+            <div class="cate-item" onclick="window.location.href='/posts/chinese-food/'" style="cursor: pointer;">
                 <div class="cate-icon">🍜</div>
                 <p>中式正餐</p>
             </div>
-            <div class="cate-item" onclick="go('list4')">
+            <div class="cate-item" onclick="window.location.href='/posts/dessert/'" style="cursor: pointer;">
                 <div class="cate-icon">🍰</div>
                 <p>甜品糕点</p>
             </div>
-            <div class="cate-item" onclick="go('list5')">
+            <div class="cate-item" onclick="window.location.href='/posts/snack/'" style="cursor: pointer;">
                 <div class="cate-icon">🍢</div>
                 <p>特色小吃</p>
             </div>
-            <div class="cate-item" onclick="go('list6')">
+            <div class="cate-item" onclick="window.location.href='/posts/light-food/'" style="cursor: pointer;">
                 <div class="cate-icon">🥗</div>
                 <p>轻食减脂</p>
             </div>
@@ -235,118 +235,9 @@
     </div>
 </div>
 
-<!-- 分类1：快餐汉堡 -->
-<div id="page-list1" class="page">
-    <div class="list-box">
-        <h2 class="title">快餐汉堡推荐</h2>
-        <div class="img-grid">
-            <div class="img-card"><img src="{% static 'img/backgrounds/fast_food_1.jpg' %}" alt="快餐1"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/fast_food_2.jpg' %}" alt="快餐2"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/fast_food_3.jpg' %}" alt="快餐3"></div>
-        </div>
-    </div>
-</div>
-
-<!-- 分类2：奶茶饮品 -->
-<div id="page-list2" class="page">
-    <div class="list-box">
-        <h2 class="title">奶茶饮品推荐</h2>
-        <div class="img-grid">
-            <div class="img-card"><img src="{% static 'img/backgrounds/milk_tea_1.jpg' %}" alt="奶茶1"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/milk_tea_2.jpg' %}" alt="奶茶2"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/milk_tea_3.jpg' %}" alt="奶茶3"></div>
-        </div>
-    </div>
-</div>
-
-<!-- 分类3：中式正餐 -->
-<div id="page-list3" class="page">
-    <div class="list-box">
-        <h2 class="title">中式正餐推荐</h2>
-        <div class="img-grid">
-            <div class="img-card"><img src="{% static 'img/backgrounds/chinese_food_1.jpg' %}" alt="中餐1"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/chinese_food_2.jpg' %}" alt="中餐2"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/chinese_food_3.jpg' %}" alt="中餐3"></div>
-        </div>
-    </div>
-</div>
-
-<!-- 分类4：甜品糕点 -->
-<div id="page-list4" class="page">
-    <div class="list-box">
-        <h2 class="title">甜品糕点推荐</h2>
-        <div class="img-grid">
-            <div class="img-card"><img src="{% static 'img/backgrounds/dessert_1.jpg' %}" alt="甜品1"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/dessert_2.jpg' %}" alt="甜品2"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/dessert_3.jpg' %}" alt="甜品3"></div>
-        </div>
-    </div>
-</div>
-
-<!-- 分类5：特色小吃 -->
-<div id="page-list5" class="page">
-    <div class="list-box">
-        <h2 class="title">特色小吃推荐</h2>
-        <div class="img-grid">
-            <div class="img-card"><img src="{% static 'img/backgrounds/snack_1.jpg' %}" alt="小吃1"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/snack_2.jpg' %}" alt="小吃2"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/milk_tea_4.jpg' %}" alt="小吃3"></div>
-        </div>
-    </div>
-</div>
-
-<!-- 分类6：轻食减脂 -->
-<div id="page-list6" class="page">
-    <div class="list-box">
-        <h2 class="title">轻食减脂推荐</h2>
-        <div class="img-grid">
-            <div class="img-card"><img src="{% static 'img/backgrounds/light_food_1.jpg' %}" alt="轻食1"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/light_food_2.jpg' %}" alt="轻食2"></div>
-            <div class="img-card"><img src="{% static 'img/backgrounds/light_food_3.jpg' %}" alt="轻食3"></div>
-        </div>
-    </div>
-</div>
-
-<!-- 发布帖子弹窗 -->
-<div class="post-modal" id="postModal">
-    <div class="post-form">
-        <h3>发布帖子</h3>
-        <div class="form-item">
-            <label>标题</label>
-            <input type="text" placeholder="请输入标题">
-        </div>
-        <div class="form-item">
-            <label>内容</label>
-            <textarea rows="5" placeholder="请输入内容"></textarea>
-        </div>
-        <div class="form-item">
-            <label>上传图片</label>
-            <input type="file" multiple>
-        </div>
-        <div class="btn-group">
-            <button class="btn-close" onclick="closePost()">关闭</button>
-            <button class="btn-submit">发布</button>
-        </div>
-    </div>
-</div>
-
 <!-- Bootstrap JS -->
 <script src="{% static 'js/bootstrap5/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap5/bootstrap.min.js' %}"></script>
-<script>
-    function go(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-' + pageId).classList.add('active');
-    }
-
-    function showPost() {
-        document.getElementById('postModal').classList.add('show');
-    }
-
-    function closePost() {
-        document.getElementById('postModal').classList.remove('show');
-    }
-</script>
 
 </body>
 </html>

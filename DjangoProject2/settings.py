@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'lauth',
     'community',
     'personalize',
+    'posts',  # 添加这一行
 ]
 
 MIDDLEWARE = [
@@ -129,6 +130,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'home' / 'static',
     BASE_DIR / 'personalize' / 'static',
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 SESSION_COOKIE_AGE = 5 * 24 * 60 * 60  # 5天（秒数）
 SESSION_SAVE_EVERY_REQUEST = True  # 每次请求都刷新session过期时间

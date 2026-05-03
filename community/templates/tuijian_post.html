@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美食推荐墙</title>
+    {% load static %}
+    <!-- Bootstrap 5 CSS -->
+    <link href="{% static 'js/bootstrap5/bootstrap.min.css' %}" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: #f7f8fa;
+            padding: 20px;
+            padding-top: 80px;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #52c41a;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .post-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .post-box h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .form-item {
+            margin-bottom: 15px;
+        }
+
+        .form-item label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        .form-item input,
+        .form-item textarea,
+        .form-item select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-item textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .img-preview {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .img-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .submit-btn {
+            background: #52c41a;
+            color: white;
+        }
+
+        .list-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.04);
+        }
+
+        .card .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .card .category-tag {
+            display: inline-block;
+            background: #f6ffed;
+            color: #52c41a;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 6px;
+        }
+
+        .card .tag {
+            display: inline-block;
+            background: #fff2f0;
+            color: #ff4d4f;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 6px;
+        }
+
+        .card .info {
+            color: #666;
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .card .imgs {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .card .imgs img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .like-btn {
+            color: #52c41a;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+        }
+
+        .comment-box {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .comment-item {
+            font-size: 13px;
+            color: #555;
+            padding: 6px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #999;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'common/navbar.html' %}
+
+    <div class="main-container">
+        <div class="header">
+            <h1>🌟 美食推荐墙</h1>
+            <p>分享你发现的美食好店！可评论、可点赞、可看浏览量</p>
+        </div>
+
+        <div class="post-box">
+            <h3>📝 发布推荐帖子</h3>
+            <div class="form-item">
+                <label>店铺名称</label>
+                <input type="text" id="shopName" placeholder="例如：XX烧烤 / XX奶茶">
+            </div>
+            <div class="form-item">
+                <label>美食分类</label>
+                <select id="category">
+                    <option value="fast-food">🍔 快餐汉堡</option>
+                    <option value="chinese-food">🍜 中餐美食</option>
+                    <option value="light-food">🥗 轻食沙拉</option>
+                    <option value="dessert">🍰 甜品蛋糕</option>
+                    <option value="snack">🍢 小吃零食</option>
+                    <option value="milk-tea">🧋 奶茶饮品</option>
+                </select>
+            </div>
+            <div class="form-item">
+                <label>店铺位置（选填）</label>
+                <input type="text" id="shopAddr" placeholder="例如：XX商场 / XX路">
+            </div>
+            <div class="form-item">
+                <label>推荐等级</label>
+                <select id="level">
+                    <option>强烈推荐</option>
+                    <option>非常好吃</option>
+                    <option>还不错</option>
+                    <option>性价比高</option>
+                    <option>环境好</option>
+                </select>
+            </div>
+            <div class="form-item">
+                <label>推荐理由（详细写）</label>
+                <textarea id="content" placeholder="味道、服务、环境、价格、特色菜...都可以写"></textarea>
+            </div>
+            <div class="form-item">
+                <label>上传美食图片</label>
+                <input type="file" id="imgFiles" accept="image/*" multiple onchange="previewImg()">
+                <div class="img-preview" id="imgPreview"></div>
+            </div>
+            <button class="btn submit-btn" onclick="postCard()">发布推荐帖</button>
+        </div>
+
+    </div>
+
+    <script src="{% static 'js/bootstrap5/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap5/bootstrap.min.js' %}"></script>
+    <script>
+        let imgList = [];
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function previewImg() {
+            let files = document.getElementById('imgFiles').files;
+            imgList = [];
+            let preview = document.getElementById('imgPreview');
+            preview.innerHTML = '';
+
+            for (let i = 0; i < files.length; i++) {
+                let img = document.createElement('img');
+                img.src = URL.createObjectURL(files[i]);
+                preview.appendChild(img);
+                imgList.push(files[i]);
+            }
+        }
+
+        function postCard() {
+            let name = document.getElementById('shopName').value.trim();
+            let category = document.getElementById('category').value;
+            let addr = document.getElementById('shopAddr').value.trim();
+            let level = document.getElementById('level').value;
+            let content = document.getElementById('content').value.trim();
+
+            if (!name || !content) {
+                alert('请填写店铺名称和推荐理由！');
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append('title', name);
+            formData.append('category', category);
+            formData.append('content', content);
+            formData.append('post_type', 'recommend');
+            formData.append('shop_addr', addr);
+            formData.append('level', level);
+
+            for (let i = 0; i < imgList.length; i++) {
+                formData.append('images', imgList[i]);
+            }
+
+            fetch('/posts/api/create/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('发布成功！');
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert('发布失败：' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('发布失败，请重试');
+            });
+        }
+    </script>
+</body>
+</html>

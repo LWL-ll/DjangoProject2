@@ -36,6 +36,19 @@ def recommend_page(request):
     return render(request, 'project_detail.html')
 
 
+def tuijian_page(request):
+    """
+    显示推荐墙页面（发布推荐帖子）
+    
+    Args:
+        request: HTTP 请求对象
+    
+    Returns:
+        HttpResponse: 渲染后的推荐墙页面
+    """
+    return render(request, 'tuijian_post.html')
+
+
 def get_posts(request):
     """
     获取帖子列表接口（支持分页和筛选）
