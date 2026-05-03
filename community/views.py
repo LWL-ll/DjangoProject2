@@ -21,7 +21,8 @@ def bilei_page(request):
     Returns:
         HttpResponse: 渲染后的避雷页面
     """
-    posts = Post.objects.filter(post_type='avoid').order_by('-created_at')
+    from posts.models import Post
+    posts = Post.objects.filter(post_type='review').order_by('-created_at')
     
     context = {
         'posts': posts,
@@ -41,6 +42,7 @@ def recommend_page(request):
     Returns:
         HttpResponse: 渲染后的推荐页面
     """
+    from posts.models import Post
     posts = Post.objects.filter(post_type='recommend').order_by('-created_at')
     
     context = {
