@@ -21,16 +21,13 @@ urlpatterns = [
     # 发布帖子 - 跳转到推荐墙
     path('create/', views.create_post_redirect, name='create_post'),
 
-    # 帖子详情页
-    path('<int:post_id>/', views.post_detail, name='post_detail'),
-
-    # 我的帖子
+    # 我的帖子（必须在 <int:post_id> 之前）
     path('my-posts/', views.my_posts, name='my_posts'),
 
-    # 编辑帖子
+    # 编辑帖子（必须在 <int:post_id>/ 之前）
     path('<int:post_id>/edit/', views.edit_post, name='edit_post'),
 
-    # 删除帖子
+    # 删除帖子（必须在 <int:post_id>/delete/ 之前）
     path('<int:post_id>/delete/', views.delete_post, name='delete_post'),
 
     # 点赞帖子
@@ -44,4 +41,7 @@ urlpatterns = [
 
     # 删除评论
     path('comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
+
+    # 帖子详情页（必须放在最后，避免拦截其他路由）
+    path('<int:post_id>/', views.post_detail, name='post_detail'),
 ]

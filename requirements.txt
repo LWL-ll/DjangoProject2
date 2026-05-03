@@ -1,0 +1,9 @@
+# Django核心框架
+Django>=6.0.4,<7.0.0
+
+# MySQL数据库驱动
+mysqlclient>=2.2.0
+
+# 图像处理支持（用于ImageField）
+Pillow>=10.0.0
+

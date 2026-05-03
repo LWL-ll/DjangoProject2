@@ -19,10 +19,10 @@ class CommentAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at']
     list_per_page = 30
 
+    @admin.display(description='评论内容')
     def content_preview(self, obj):
         """显示评论内容预览"""
         return obj.content[:50] + '...' if len(obj.content) > 50 else obj.content
-    content_preview.short_description = '评论内容'
 
 
 @admin.register(UserLike)

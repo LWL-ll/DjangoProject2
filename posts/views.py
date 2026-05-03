@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 from .models import Post, PostImage, Comment, PostLike, CommentLike, PostView
-from lauth.decorators import login_required as auth_login_required
 
 
 # 分类配置
@@ -162,7 +161,7 @@ def post_detail(request, post_id):
     return render(request, 'post_detail.html', context)
 
 
-@auth_login_required
+@login_required
 def create_post(request):
     """发布帖子页"""
     if request.method == 'POST':
