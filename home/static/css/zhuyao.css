@@ -123,51 +123,186 @@ body {
 
 /* 右侧装饰图 - 已删除，因为使用轮播图替代 */
 
-/* 美食分类区样式 */
+/* 美食分类区样式 - 自动跃动效果 */
 .category {
-  padding: 50px 0;
-  background-color: #f8f9fa;
+  padding: 0 0 20px;
+  background: #ffffff;
+  overflow: hidden;
+  position: relative;
 }
 
-.category-list {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 20px;
+.photo-wall {
+  width: min(1200px, 92vw);
+  height: clamp(280px, 32vw, 480px);
+  position: relative;
+  margin: 0 auto 0;
 }
 
-.category-item {
-  width: 150px;
-  text-align: center;
+.photo-card {
+  position: absolute;
+  top: 50%;
+  width: clamp(180px, 16vw, 300px);
+  aspect-ratio: 3 / 4;
+  transform-origin: 50% 58%;
+  border: 1.5px solid #1976d2;
+  box-shadow: 0 10px 20px -8px rgba(25, 118, 210, 0.25);
+  background: #d8d8d8;
+  overflow: hidden;
+  border-radius: 4px;
+  animation: hop 2.8s ease-in-out infinite;
   cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  transition: filter 0.3s ease;
 }
 
-.category-item:hover .category-icon {
-  background-color: #1976d2;
+.photo-card:hover {
+  filter: brightness(1.05) saturate(1.1);
+  z-index: 10 !important;
+}
+
+.photo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.95) contrast(1.03);
+}
+
+.photo-card:nth-child(1) {
+  left: 2%;
+  z-index: 1;
+  --r: -5deg;
+  --x: -6px;
+  --d: 0s;
+}
+
+.photo-card:nth-child(2) {
+  left: 16%;
+  z-index: 2;
+  --r: 2.5deg;
+  --x: 0px;
+  --d: 0.2s;
+}
+
+.photo-card:nth-child(3) {
+  left: 30%;
+  z-index: 3;
+  --r: -3.5deg;
+  --x: 4px;
+  --d: 0.4s;
+}
+
+.photo-card:nth-child(4) {
+  left: 44%;
+  z-index: 4;
+  --r: 3deg;
+  --x: 0px;
+  --d: 0.6s;
+}
+
+.photo-card:nth-child(5) {
+  left: 58%;
+  z-index: 5;
+  --r: -3deg;
+  --x: -4px;
+  --d: 0.8s;
+}
+
+.photo-card:nth-child(6) {
+  left: 72%;
+  z-index: 6;
+  --r: 2deg;
+  --x: -6px;
+  --d: 1s;
+}
+
+.photo-card {
+  animation-delay: var(--d);
+}
+
+@keyframes hop {
+  0%, 100% {
+    transform: translate(var(--x), calc(-50% + 0px)) rotate(var(--r)) scale(1);
+  }
+  35% {
+    transform: translate(calc(var(--x) + 1px), calc(-50% - 18px)) rotate(calc(var(--r) + 0.6deg)) scale(1.012);
+  }
+  65% {
+    transform: translate(calc(var(--x) - 1px), calc(-50% + 4px)) rotate(calc(var(--r) - 0.45deg)) scale(0.996);
+  }
+}
+
+/* 底部文字标签 */
+.photo-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 12px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
   color: #fff;
-  transform: scale(1.1);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-.category-icon {
-  width: 80px;
-  height: 80px;
-  line-height: 80px;
-  background-color: #e3f2fd;
-  border-radius: 50%;
-  font-size: 36px;
-  margin: 0 auto 15px;
-  transition: all 0.3s;
+/* 响应式设计 */
+@media (max-width: 1160px) {
+  .photo-wall {
+    height: 780px;
+    width: min(650px, 90vw);
+  }
+
+  .photo-card {
+    width: min(50vw, 340px);
+    left: 50% !important;
+    top: auto;
+  }
+
+  .photo-card:nth-child(1) { top: 5%; --r: -6deg; }
+  .photo-card:nth-child(2) { top: 20%; --r: 2deg; }
+  .photo-card:nth-child(3) { top: 35%; --r: -4deg; }
+  .photo-card:nth-child(4) { top: 50%; --r: 2deg; }
+  .photo-card:nth-child(5) { top: 65%; --r: -3deg; }
+  .photo-card:nth-child(6) { top: 80%; --r: 1deg; }
+
+  @keyframes hop {
+    0%, 100% {
+      transform: translate(-50%, 0) rotate(var(--r)) scale(1);
+    }
+    35% {
+      transform: translate(-50%, -14px) rotate(calc(var(--r) + 0.6deg)) scale(1.01);
+    }
+    65% {
+      transform: translate(-50%, 3px) rotate(calc(var(--r) - 0.4deg)) scale(0.997);
+    }
+  }
+}
+
+/* 减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .photo-card {
+    animation: none;
+    transform: translate(var(--x), -50%) rotate(var(--r));
+  }
 }
 
 .section-title {
-  font-size: 28px;
+  font-size: 32px;
   color: #1976d2;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 8px;
+  margin-top: 25px;
   font-weight: bold;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #1976d2, #42a5f5);
+  margin: 8px auto 0;
+  border-radius: 2px;
 }
