@@ -285,6 +285,158 @@
         margin-top: 10px;
       }
 
+      .post-actions {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border: 2px solid var(--soft);
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        font-size: 15px;
+        color: var(--muted);
+        transition: all 0.3s;
+      }
+
+      .action-btn:hover {
+        border-color: var(--gold);
+        color: var(--ink);
+      }
+
+      .action-btn.liked {
+        border-color: #ff4d4f;
+        background: #fff1f0;
+        color: #ff4d4f;
+      }
+
+      .comments-section {
+        margin-top: 25px;
+      }
+
+      .comments-section h3 {
+        margin: 0 0 20px;
+        font-family: "Oswald", sans-serif;
+        font-size: 18px;
+        letter-spacing: 0.04em;
+        color: var(--ink);
+      }
+
+      .comment-form {
+        margin-bottom: 25px;
+      }
+
+      .comment-input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid var(--soft);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        resize: vertical;
+        min-height: 80px;
+        transition: border-color 0.3s;
+      }
+
+      .comment-input:focus {
+        outline: none;
+        border-color: var(--gold);
+      }
+
+      .comment-submit {
+        margin-top: 10px;
+        padding: 10px 24px;
+        background: var(--gold);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+      }
+
+      .comment-submit:hover {
+        background: #c4932f;
+      }
+
+      .comment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .comment-item {
+        padding: 15px;
+        background: var(--paper);
+        border-radius: 8px;
+        border-left: 3px solid var(--gold);
+      }
+
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .comment-author {
+        font-weight: 500;
+        color: var(--ink);
+        font-size: 14px;
+      }
+
+      .comment-time {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .comment-content {
+        color: var(--ink);
+        line-height: 1.6;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+
+      .comment-actions {
+        display: flex;
+        gap: 15px;
+      }
+
+      .comment-like-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--muted);
+        font-size: 13px;
+        transition: color 0.3s;
+      }
+
+      .comment-like-btn:hover {
+        color: #ff4d4f;
+      }
+
+      .comment-like-btn.liked {
+        color: #ff4d4f;
+      }
+
+      .no-comments {
+        text-align: center;
+        color: var(--muted);
+        padding: 30px;
+        font-size: 14px;
+      }
+
       @media (max-width: 980px) {
         .page {
           grid-template-columns: 1fr;
@@ -400,10 +552,53 @@
 
         <div class="meta-info">
           <span class="meta-item">👤 {{ post.author.username }}</span>
-          <span class="meta-item">👁️ {{ post.views }}</span>
+          <span class="meta-item">️ {{ post.views }}</span>
           <span class="meta-item">❤️ {{ post.likes }}</span>
-          <span class="meta-item">💬 {{ post.comments_count }}</span>
+          <span class="meta-item"> {{ post.comments_count }}</span>
           <span class="meta-item">📅 {{ post.created_at|date:"Y-m-d" }}</span>
+        </div>
+
+        <div class="post-actions">
+          <button class="action-btn {% if user_liked %}liked{% endif %}"
+                  id="likePostBtn"
+                  onclick="togglePostLike()">
+            <span id="likeIcon">{% if user_liked %}❤️{% else %}🤍{% endif %}</span>
+            <span id="likeCount">{{ post.likes }}</span>
+          </button>
+        </div>
+
+        <div class="comments-section">
+          <h3>💬 评论区 ({{ post.comments_count }})</h3>
+
+          <div class="comment-form">
+            <textarea class="comment-input"
+                      id="commentInput"
+                      placeholder="写下你的评论..."></textarea>
+            <button class="comment-submit" onclick="addComment()">发表评论</button>
+          </div>
+
+          <div class="comment-list" id="commentList">
+            {% if comment_page_obj %}
+              {% for comment in comment_page_obj %}
+              <div class="comment-item" id="comment-{{ comment.id }}">
+                <div class="comment-header">
+                  <span class="comment-author">👤 {{ comment.author.username }}</span>
+                  <span class="comment-time">{{ comment.created_at|date:"Y-m-d H:i" }}</span>
+                </div>
+                <div class="comment-content">{{ comment.content }}</div>
+                <div class="comment-actions">
+                  <button class="comment-like-btn"
+                          id="comment-like-{{ comment.id }}"
+                          onclick="toggleCommentLike({{ comment.id }})">
+                    ❤️ <span id="comment-like-count-{{ comment.id }}">{{ comment.likes }}</span>
+                  </button>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="no-comments">暂无评论，快来抢沙发吧！</div>
+            {% endif %}
+          </div>
         </div>
 
       </aside>
@@ -468,6 +663,142 @@
         if (touchEndX > touchStartX + 50) {
           changeSlide(-1);
         }
+      }
+
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      function togglePostLike() {
+        const btn = document.getElementById('likePostBtn');
+        const icon = document.getElementById('likeIcon');
+        const count = document.getElementById('likeCount');
+
+        fetch('/posts/{{ post.id }}/like/', {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            if (data.action === 'liked') {
+              btn.classList.add('liked');
+              icon.textContent = '❤️';
+            } else {
+              btn.classList.remove('liked');
+              icon.textContent = '🤍';
+            }
+            count.textContent = data.likes;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('操作失败，请重试');
+        });
+      }
+
+      function addComment() {
+        const input = document.getElementById('commentInput');
+        const content = input.value.trim();
+
+        if (!content) {
+          alert('请输入评论内容');
+          return;
+        }
+
+        fetch('/posts/{{ post.id }}/comment/', {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: 'content=' + encodeURIComponent(content)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            input.value = '';
+
+            const commentList = document.getElementById('commentList');
+            const noComments = commentList.querySelector('.no-comments');
+            if (noComments) {
+              noComments.remove();
+            }
+
+            const commentHtml = `
+              <div class="comment-item" id="comment-${data.comment_id}">
+                <div class="comment-header">
+                  <span class="comment-author">👤 ${data.author}</span>
+                  <span class="comment-time">${data.created_at}</span>
+                </div>
+                <div class="comment-content">${data.content}</div>
+                <div class="comment-actions">
+                  <button class="comment-like-btn"
+                          id="comment-like-${data.comment_id}"
+                          onclick="toggleCommentLike(${data.comment_id})">
+                    ❤️ <span id="comment-like-count-${data.comment_id}">0</span>
+                  </button>
+                </div>
+              </div>
+            `;
+
+            commentList.insertAdjacentHTML('afterbegin', commentHtml);
+
+            const countElement = document.querySelector('.meta-item:nth-child(4)');
+            if (countElement) {
+              const currentCount = parseInt(countElement.textContent.match(/\d+/)[0]);
+              countElement.innerHTML = '💬 ' + (currentCount + 1);
+            }
+          } else {
+            alert(data.error || '评论失败');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('评论失败，请重试');
+        });
+      }
+
+      function toggleCommentLike(commentId) {
+        const btn = document.getElementById('comment-like-' + commentId);
+        const countSpan = document.getElementById('comment-like-count-' + commentId);
+
+        fetch('/posts/comment/' + commentId + '/like/', {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            if (data.action === 'liked') {
+              btn.classList.add('liked');
+            } else {
+              btn.classList.remove('liked');
+            }
+            countSpan.textContent = data.likes;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('操作失败，请重试');
+        });
       }
     </script>
   </body>
