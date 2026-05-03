@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美食平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background: url('背景1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-color: #f0f7ff;
+            color: #333;
+        }
+
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .nav {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            display: flex;
+            gap: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            font-size: 18px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .nav a.active {
+            color: #3688FF;
+            font-weight: bold;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 28px;
+            color: #3688FF;
+            margin: 20px 0 40px;
+        }
+
+        /* 白色大框已彻底隐形 */
+        .home-box {
+            background: transparent;
+            border-radius: 15px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .post-btn {
+            color: white;
+            background: #3688FF;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .post-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .post-modal.show {
+            display: flex;
+        }
+
+        /* 你图片里的发布帖子样式（完整整合） */
+        .post-form {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 480px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .post-form h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .form-item {
+            margin-bottom: 15px;
+        }
+
+        .form-item label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        .form-item input,
+        .form-item textarea,
+        .form-item select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-item textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .img-preview {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .img-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .btn-submit {
+            background: #ff4d4f;
+            color: white;
+        }
+
+        .btn-close {
+            background: #eee;
+        }
+
+        /* 美食分类 */
+        .cate-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .cate-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: 0.2s;
+        }
+
+        .cate-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .cate-icon {
+            width: 70px;
+            height: 70px;
+            font-size: 36px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e8f3ff;
+            border-radius: 50%;
+            color: #3688FF;
+        }
+
+        .cate-item p {
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .list-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .img-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .img-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .img-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* 帖子列表样式（来自你图片） */
+        .list-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.04);
+        }
+
+        .card .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .card .tag {
+            display: inline-block;
+            background: #fff2f0;
+            color: #ff4d4f;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 6px;
+        }
+
+        .card .info {
+            color: #666;
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .card .imgs {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .card .imgs img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .time {
+            color: #999;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .stat {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .like-btn {
+            color: #ff4d4f;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 14px;
+        }
+
+        .comment-box {
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .comment-item {
+            color: #555;
+            font-size: 13px;
+            padding: 6px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #999;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 首页 -->
+<div id="home" class="page active">
+    <div class="nav">
+        <a class="active" onclick="go('home')">首页</a>
+        <a onclick="go('list1')">快餐汉堡</a>
+        <a onclick="go('list2')">奶茶饮品</a>
+        <a onclick="go('list3')">中式正餐</a>
+        <a onclick="go('list4')">甜品糕点</a>
+        <a onclick="go('list5')">特色小吃</a>
+        <a onclick="go('list6')">轻食减脂</a>
+    </div>
+
+    <div class="home-box">
+        <button class="post-btn" onclick="showPost()">+ 发布帖子</button>
+        <h2 class="title">美食分类</h2>
+        <div class="cate-grid">
+            <div class="cate-item" onclick="go('list1')"><div class="cate-icon">🍔</div><p>快餐汉堡</p></div>
+            <div class="cate-item" onclick="go('list2')"><div class="cate-icon">🥤</div><p>奶茶饮品</p></div>
+            <div class="cate-item" onclick="go('list3')"><div class="cate-icon">🍜</div><p>中式正餐</p></div>
+            <div class="cate-item" onclick="go('list4')"><div class="cate-icon">🍰</div><p>甜品糕点</p></div>
+            <div class="cate-item" onclick="go('list5')"><div class="cate-icon">🍢</div><p>特色小吃</p></div>
+            <div class="cate-item" onclick="go('list6')"><div class="cate-icon">🥗</div><p>轻食减脂</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- 分类1：快餐汉堡 -->
+<div id="list1" class="page">
+    <div class="nav"><a onclick="go('home')">返回首页</a><a class="active">快餐汉堡</a></div>
+    <div class="list-box">
+        <h2 class="title">快餐汉堡避雷</h2>
+        <div class="img-grid">
+            <div class="img-card"><img src="避雷4.jpg"></div>
+            <div class="img-card"><img src="避雷5.jpg"></div>
+            <div class="img-card"><img src="避雷6.jpg"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 分类2：奶茶饮品 -->
+<div id="list2" class="page">
+    <div class="nav"><a onclick="go('home')">返回首页</a><a class="active">奶茶饮品</a></div>
+    <div class="list-box">
+        <h2 class="title">奶茶饮品避雷</h2>
+        <div class="img-grid">
+            <div class="img-card"><img src="避雷1.jpg"></div>
+            <div class="img-card"><img src="避雷2.jpg"></div>
+            <div class="img-card"><img src="避雷3.jpg"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 分类3：中式正餐 -->
+<div id="list3" class="page">
+    <div class="nav"><a onclick="go('home')">返回首页</a><a class="active">中式正餐</a></div>
+    <div class="list-box">
+        <h2 class="title">中式正餐避雷</h2>
+        <div class="img-grid">
+            <div class="img-card"><img src="避雷7.jpg"></div>
+            <div class="img-card"><img src="避雷8.jpg"></div>
+            <div class="img-card"><img src="避雷9.jpg"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 分类4：甜品糕点 -->
+<div id="list4" class="page">
+    <div class="nav"><a onclick="go('home')">返回首页</a><a class="active">甜品糕点</a></div>
+    <div class="list-box">
+        <h2 class="title">甜品糕点避雷</h2>
+        <div class="img-grid">
+            <div class="img-card"><img src="避雷11.jpg"></div>
+            <div class="img-card"><img src="避雷22.jpg"></div>
+            <div class="img-card"><img src="避雷33.jpg"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 分类5：特色小吃 -->
+<div id="list5" class="page">
+    <div class="nav"><a onclick="go('home')">返回首页</a><a class="active">特色小吃</a></div>
+    <div class="list-box">
+        <h2 class="title">特色小吃避雷</h2>
+        <div class="img-grid">
+            <div class="img-card"><img src="避雷44.jpg"></div>
+            <div class="img-card"><img src="避雷55.jpg"></div>
+            <div class="img-card"><img src="避雷66.jpg"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 分类6：轻食减脂 -->
+<div id="list6" class="page">
+    <div class="nav"><a onclick="go('home')">返回首页</a><a class="active">轻食减脂</a></div>
+    <div class="list-box">
+        <h2 class="title">轻食减脂避雷</h2>
+        <div class="img-grid">
+            <div class="img-card"><img src="避雷77.jpg"></div>
+            <div class="img-card"><img src="避雷88.jpg"></div>
+            <div class="img-card"><img src="避雷99.jpg"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 发布帖子弹窗（你图片里的完整样式） -->
+<div class="post-modal" id="postModal">
+    <div class="post-form">
+        <h3>发布避雷帖子</h3>
+        <div class="form-item">
+            <label>店铺名称</label>
+            <input type="text" id="shopName" placeholder="例如：XX烧烤 / XX奶茶">
+        </div>
+        <div class="form-item">
+            <label>分类</label>
+            <select id="category">
+                <option value="fast">快餐汉堡</option>
+                <option value="drink">奶茶饮品</option>
+                <option value="chinese">中式正餐</option>
+                <option value="dessert">甜品糕点</option>
+                <option value="snack">特色小吃</option>
+                <option value="light">轻食减脂</option>
+            </select>
+        </div>
+        <div class="form-item">
+            <label>避雷原因</label>
+            <textarea id="content" rows="5" placeholder="请输入避雷内容"></textarea>
+        </div>
+        <div class="form-item">
+            <label>上传图片</label>
+            <input type="file" id="fileInput" multiple accept="image/*">
+            <div class="img-preview" id="imgPreview"></div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-close" onclick="closePost()">关闭</button>
+            <button class="btn btn-submit" onclick="submitPost()">发布</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 页面切换
+    function go(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+        document.querySelector(`.nav a[onclick="go('${pageId}')"]`)?.classList.add('active');
+    }
+
+    // 弹窗控制
+    function showPost() { document.getElementById('postModal').classList.add('show'); }
+    function closePost() { document.getElementById('postModal').classList.remove('show'); }
+
+    // 图片预览
+    const fileInput = document.getElementById('fileInput');
+    const imgPreview = document.getElementById('imgPreview');
+    fileInput.addEventListener('change', function() {
+        imgPreview.innerHTML = '';
+        for (let file of this.files) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                imgPreview.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 发布帖子
+    function submitPost() {
+        let name = document.getElementById('shopName').value;
+        let content = document.getElementById('content').value;
+        if(!name || !content){ alert('请填写完整信息'); return; }
+        alert('帖子发布成功！');
+        closePost();
+    }
+</script>
+</body>
+</html>

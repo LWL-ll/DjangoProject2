@@ -16,10 +16,17 @@
             scroll-behavior: smooth;
         }
 
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow-x: hidden;
+            height: 100%;
+        }
+
         body {
             min-height: 100vh;
             overflow-x: hidden;
-            background-color: #f5f1eb;
+            background-color: #ffffff !important;
             transition: background-color 0.1s ease;
         }
 
@@ -27,28 +34,18 @@
             position: relative;
             width: 100%;
             height: 100vh;
-            padding: 100px;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
             background: transparent;
-        }
-
-        .parallax-section::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to top, #fff, transparent);
-            z-index: 1000;
-            pointer-events: none;
+            margin: 0;
         }
 
         .parallax-section img {
             position: absolute;
-            top: -60px;
+            top: 0;
             left: 0;
             width: 100%;
             height: 100%;
@@ -89,8 +86,8 @@
 
         .content-section {
             position: relative;
-            background: #fff;
-            color: #333;
+            background: linear-gradient(180deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
             z-index: 100;
         }
     </style>
@@ -100,7 +97,7 @@
     {% include 'common/navbar.html' %}
 
     <!-- 视差滚动区域 -->
-    <section class="parallax-section" style="margin-top: 65px;">
+    <section class="parallax-section" style="margin-top: 10px;">
         <img src="{% static 'parallax-images/stars.png' %}" id="stars" alt="星空">
         <img src="{% static 'parallax-images/mountains_behind.png' %}" id="mountains_behind" alt="远山">
         <a href="#main-content" id="explore-btn">探索美食</a>
@@ -109,82 +106,297 @@
 
     <!-- 主要内容区域（原主页内容） -->
     <div id="main-content" class="content-section">
-        <!-- 优化后的Banner区（带轮播图，右对齐） -->
-        <div class="banner">
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&family=Long+Cang&display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          :root {
+            --primary-blue: #1976d2;
+            --light-blue: #e3f2fd;
+            --medium-blue: #bbdefb;
+            --dark-blue: #0d47a1;
+            --white: #ffffff;
+          }
 
-            <div class="wrapper" style="display: flex; align-items: center; justify-content: space-between;">
+          .new-content * {
+            box-sizing: border-box;
+          }
 
-                <!-- 左侧文字 -->
-                <div class="banner-text">
-                    <h2>校园美食，一键直达</h2>
-                    <p>足不出宿舍，吃遍校园美味</p>
-                    <a href="#" class="banner-btn">立即点餐</a>
-                </div>
+          .new-content {
+            font-family: "Ma Shan Zheng", cursive, sans-serif;
+            background: var(--white);
+            color: var(--primary-blue);
+          }
 
-                <!-- 右侧轮播图（不需要 margin-left: auto，因为父级用了 space-between） -->
-                <div class="carousel-container" style="width: 500px; flex-shrink: 0; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
-                    <div class="carousel-wrapper" id="carouselWrapper" style="display: flex; transition: transform 0.5s ease-in-out; height: 350px;">
+          .hero {
+            min-height: 66vh;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 80px 16px 60px;
+            background: linear-gradient(180deg, var(--white) 0%, var(--light-blue) 100%);
+          }
 
-                        <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                            <img src="{% static 'tu/1.jpg' %}" alt="美食1" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                        <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                            <img src="{% static 'tu/3.jpg' %}" alt="美食2" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                        <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                            <img src="{% static 'tu/4.jpg' %}" alt="美食3" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                        <div class="carousel-slide" style="min-width: 100%; height: 100%;">
-                            <img src="{% static 'tu/2.jpg' %}" alt="美食4" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
+          .hero-inner {
+            max-width: 820px;
+          }
 
-                    </div>
+          .hero-kicker {
+            color: var(--primary-blue);
+            font-size: clamp(42px, 5vw, 72px);
+            margin: 0 0 10px;
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 0 rgba(25, 118, 210, 0.1);
+          }
 
-                    <button onclick="prevSlide()" style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #1976d2; z-index: 10;">❮</button>
-                    <button onclick="nextSlide()" style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px; color: #1976d2; z-index: 10;">❯</button>
+          .hero-title {
+            font-size: clamp(36px, 6vw, 80px);
+            letter-spacing: 3px;
+            margin: 20px 0 30px;
+            color: var(--dark-blue);
+            line-height: 1.3;
+            text-shadow: 3px 3px 0 rgba(25, 118, 210, 0.15);
+          }
 
-                    <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10;">
-                        <span class="carousel-dot active" onclick="goToSlide(0)" style="width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; border: 2px solid #1976d2;"></span>
-                        <span class="carousel-dot" onclick="goToSlide(1)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
-                        <span class="carousel-dot" onclick="goToSlide(2)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
-                        <span class="carousel-dot" onclick="goToSlide(3)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: 2px solid transparent;"></span>
-                    </div>
-                </div>
+          .hero-copy {
+            font-size: clamp(18px, 2vw, 22px);
+            line-height: 2;
+            margin: 40px auto 45px;
+            max-width: 700px;
+            color: var(--primary-blue);
+            padding: 25px 35px;
+            background: var(--white);
+            border: 3px solid var(--primary-blue);
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            box-shadow: 4px 4px 0 rgba(25, 118, 210, 0.2);
+          }
 
+          .hero-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            color: var(--primary-blue);
+            padding: 20px 55px;
+            border: 3px solid var(--primary-blue);
+            font-size: clamp(18px, 2vw, 22px);
+            letter-spacing: 2px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--primary-blue);
+            transition: all 0.3s ease;
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+          }
+
+          .hero-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--dark-blue);
+            background: var(--primary-blue);
+            color: var(--white);
+          }
+
+          .gallery {
+            position: relative;
+            background: var(--light-blue);
+            padding: 74px 0 120px;
+          }
+
+          .gallery::before {
+            content: "";
+            position: absolute;
+            left: -4vw;
+            right: -4vw;
+            top: -25px;
+            height: 40px;
+            background: var(--white);
+            transform: rotate(-4deg);
+            box-shadow: 0 5px 0 var(--white);
+            z-index: 0;
+          }
+
+          .gallery-band {
+            display: flex;
+            gap: 0;
+            justify-content: center;
+            align-items: flex-end;
+            padding: 0 28px;
+            transform: translateY(44px);
+            position: relative;
+            z-index: 1;
+          }
+
+          .card {
+            position: relative;
+            background: var(--white);
+            padding: 10px 10px 15px;
+            border: 3px solid var(--primary-blue);
+            box-shadow: 5px 5px 0 rgba(25, 118, 210, 0.2);
+            transform: rotate(var(--tilt, -4deg));
+            transition: all 0.4s ease;
+            opacity: 0;
+            margin-left: -58px;
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+          }
+
+          .card:hover {
+            transform: rotate(var(--tilt, -4deg)) translateY(-8px) scale(1.05);
+            box-shadow: 8px 8px 0 rgba(25, 118, 210, 0.3);
+          }
+
+          .card:first-child {
+            margin-left: 0;
+          }
+
+          .card img {
+            display: block;
+            width: clamp(170px, 15vw, 230px);
+            height: clamp(170px, 15vw, 230px);
+            object-fit: cover;
+            background: var(--white);
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+          }
+
+          .card:nth-child(2) {
+            --tilt: 3deg;
+          }
+
+          .card:nth-child(3) {
+            --tilt: -2deg;
+          }
+
+          .card:nth-child(4) {
+            --tilt: 2deg;
+          }
+
+          .card:nth-child(5) {
+            --tilt: -6deg;
+          }
+
+          .card:nth-child(6) {
+            --tilt: 4deg;
+          }
+
+          .gallery.in-view .card {
+            animation: popIn 0.7s ease forwards;
+          }
+
+          .gallery.in-view .card:nth-child(2) {
+            animation-delay: 0.08s;
+          }
+
+          .gallery.in-view .card:nth-child(3) {
+            animation-delay: 0.16s;
+          }
+
+          .gallery.in-view .card:nth-child(4) {
+            animation-delay: 0.24s;
+          }
+
+          .gallery.in-view .card:nth-child(5) {
+            animation-delay: 0.32s;
+          }
+
+          .gallery.in-view .card:nth-child(6) {
+            animation-delay: 0.4s;
+          }
+
+          @keyframes popIn {
+            0% {
+              transform: translateY(40px) rotate(var(--tilt, -4deg)) scale(0.95);
+              opacity: 0;
+            }
+            60% {
+              transform: translateY(-8px) rotate(var(--tilt, -4deg)) scale(1.02);
+              opacity: 1;
+            }
+            100% {
+              transform: translateY(0) rotate(var(--tilt, -4deg)) scale(1);
+              opacity: 1;
+            }
+          }
+
+          @media (max-width: 980px) {
+            .gallery-band {
+              flex-wrap: wrap;
+            }
+
+            .card {
+              margin-bottom: 20px;
+            }
+          }
+
+          @media (max-width: 620px) {
+            .hero {
+              padding: 72px 16px 64px;
+            }
+
+            .hero-copy {
+              font-size: 16px;
+            }
+
+            .hero-button {
+              width: 100%;
+            }
+          }
+        </style>
+
+        <div class="new-content">
+          <section class="hero">
+            <div class="hero-inner">
+              <p class="hero-kicker">干饭人情报站</p>
+              <h1 class="hero-title">无广亲测不踩雷・校园限定</h1>
+              <p class="hero-copy">
+                别再对着食堂窗口犯选择困难！<br/>
+                这里是本校干饭人真实测评基地，<br/>
+                帮你筛掉黑暗料理，锁定食堂 / 外卖宝藏，<br/>
+                把干饭时间从 10 分钟决策直接缩短到 3 秒！
+              </p>
+              <button class="hero-button">速取干饭清单</button>
             </div>
-        </div>
-
-        <!-- 美食分类区 -->
-        <div class="category">
-            <div class="wrapper">
-                <h3 class="section-title">美食分类</h3>
-                <div class="category-list">
-                    <div class="category-item">
-                        <div class="category-icon">🍔</div>
-                        <p>快餐汉堡</p>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🥤</div>
-                        <p>奶茶饮品</p>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🍜</div>
-                        <p>中式正餐</p>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🍰</div>
-                        <p>甜品糕点</p>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🌮</div>
-                        <p>特色小吃</p>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🥗</div>
-                        <p>轻食减脂</p>
-                    </div>
-                </div>
+          </section>
+          <section class="gallery" id="gallery">
+            <div class="gallery-band">
+              <figure class="card" style="--tilt: -6deg">
+                <img
+                  src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80"
+                  alt="Fresh salad bowl"
+                />
+              </figure>
+              <figure class="card" style="--tilt: 4deg">
+                <img
+                  src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80"
+                  alt="Salmon bowl"
+                />
+              </figure>
+              <figure class="card" style="--tilt: -2deg">
+                <img
+                  src="https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=900&q=80"
+                  alt="Grilled sandwich"
+                />
+              </figure>
+              <figure class="card" style="--tilt: 3deg">
+                <img
+                  src="https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=900&q=80"
+                  alt="Breakfast plate"
+                />
+              </figure>
+              <figure class="card" style="--tilt: -4deg">
+                <img
+                  src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=900&q=80"
+                  alt="Avocado toast"
+                />
+              </figure>
+              <figure class="card" style="--tilt: 5deg">
+                <img
+                  src="https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80"
+                  alt="Pastry plate"
+                />
+              </figure>
             </div>
+          </section>
         </div>
     </div>
 
@@ -207,140 +419,21 @@
             explore_btn.style.marginTop = value * 1.5 + 'px';
         });
 
-        // 轮播图功能
-        let currentSlide = 0;
-        const wrapper = document.getElementById('carouselWrapper');
-        const dots = document.querySelectorAll('.carousel-dot');
-        const totalSlides = 4;
-
-        function updateCarousel() {
-            wrapper.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
-            dots.forEach((dot, index) => {
-                if (index === currentSlide) {
-                    dot.style.background = 'white';
-                    dot.style.borderColor = '#ffffff';
-                } else {
-                    dot.style.background = 'rgba(255,255,255,0.5)';
-                    dot.style.borderColor = 'transparent';
+        // 画廊动画
+        const gallery = document.querySelector(".gallery");
+        if (gallery) {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  gallery.classList.add("in-view");
                 }
-            });
-        }
-
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            updateCarousel();
-        }
-
-        function prevSlide() {
-            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-            updateCarousel();
-        }
-
-        function goToSlide(index) {
-            currentSlide = index;
-            updateCarousel();
-        }
-
-        // 自动播放
-        let autoPlay = setInterval(nextSlide, 4000);
-
-        // 鼠标悬停暂停
-        const container = document.querySelector('.carousel-container');
-        if (container) {
-            container.addEventListener('mouseenter', function() {
-                clearInterval(autoPlay);
-            });
-            container.addEventListener('mouseleave', function() {
-                autoPlay = setInterval(nextSlide, 4000);
-            });
-        }
-
-        // ===== 登录状态管理 =====
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const loginText = document.getElementById('loginText');
-        const usernameText = document.getElementById('usernameText');
-        const bileiLink = document.getElementById('bileiLink');
-        const recommendLink = document.getElementById('recommendLink');
-        const personalizeLink = document.getElementById('personalizeLink');
-
-        let isLoggedIn = false;
-
-        // 页面加载时检查登录状态
-        window.addEventListener('load', function() {
-            checkLoginStatus();
-        });
-
-        // 检查登录状态
-        function checkLoginStatus() {
-            fetch('/auth/check-login/')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.is_authenticated) {
-                        // 已登录，显示用户名和退出按钮
-                        loginText.style.display = 'none';
-                        loginBtn.style.display = 'none';
-                        usernameText.style.display = 'inline';
-                        usernameText.textContent = data.username;
-                        logoutBtn.style.display = 'inline';
-                        isLoggedIn = true;
-                    } else {
-                        // 未登录，显示登录按钮
-                        loginText.style.display = 'inline';
-                        loginBtn.style.display = 'inline';
-                        usernameText.style.display = 'none';
-                        logoutBtn.style.display = 'none';
-                        isLoggedIn = false;
-                    }
-                })
-                .catch(error => {
-                    console.error('检查登录状态失败:', error);
-                });
-        }
-
-        // 推荐链接点击事件
-        if (recommendLink) {
-            recommendLink.addEventListener('click', function(e) {
-                if (!isLoggedIn) {
-                    e.preventDefault();
-                    alert('请先登录后再访问推荐页面');
-                    window.location.href = '/auth/login/';
-                }
-            });
-        }
-
-        // 避雷链接点击事件
-        if (bileiLink) {
-            bileiLink.addEventListener('click', function() {
-                if (isLoggedIn) {
-                    window.location.href = '/community/bilei/';
-                } else {
-                    alert('请先登录后再访问避雷页面');
-                    window.location.href = '/auth/login/';
-                }
-            });
-        }
-
-        // 个性化链接已改为直接跳转，删除原有的alert提示
-
-        // 退出登录
-
-        // 获取 CSRF Token
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
+              });
+            },
+            { threshold: 0.35 }
+          );
+          observer.observe(gallery);
         }
     </script>
-
 </body>
 </html>
