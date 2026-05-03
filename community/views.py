@@ -10,6 +10,7 @@ from .models import Post, Comment, UserLike
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def bilei_page(request):
     """
     显示避雷帖子页面（包含发帖表单和帖子列表）
@@ -30,6 +31,7 @@ def bilei_page(request):
     return render(request, 'bilei_post.html', context)
 
 
+@login_required
 def recommend_page(request):
     """
     显示推荐帖子页面
@@ -43,6 +45,7 @@ def recommend_page(request):
     return render(request, 'project_detail.html')
 
 
+@login_required
 def tuijian_page(request):
     """
     显示推荐墙页面（发布推荐帖子）

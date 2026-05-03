@@ -6,6 +6,7 @@ import json
 from .models import UserPreference
 
 
+@login_required
 def gexinghua(request):
     """
     显示个性化推荐页面
@@ -16,9 +17,7 @@ def gexinghua(request):
     Returns:
         HttpResponse: 渲染后的个性化推荐页面
     """
-    user_preference = None
-    if request.user.is_authenticated:
-        user_preference = UserPreference.objects.filter(user=request.user).first()
+    user_preference = UserPreference.objects.filter(user=request.user).first()
     
     return render(request, 'gexinghua.html', {'user_preference': user_preference})
 

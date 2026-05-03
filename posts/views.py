@@ -30,6 +30,7 @@ def get_client_ip(request):
     return ip
 
 
+@login_required
 def post_list(request):
     """帖子列表页"""
     post_type = request.GET.get('type', 'all')
@@ -76,6 +77,7 @@ def post_list(request):
     return render(request, 'category_list.html', context)
 
 
+@login_required
 def category_list(request, category):
     """分类帖子列表页"""
     category_name = CATEGORY_NAMES.get(category, '未知分类')
@@ -111,6 +113,7 @@ def category_list(request, category):
     return render(request, 'category_list.html', context)
 
 
+@login_required
 def post_detail(request, post_id):
     """帖子详情页"""
     post = get_object_or_404(Post, id=post_id, is_published=True)
@@ -237,7 +240,44 @@ def my_posts(request):
 
 
 @login_required
-@require_POST
+def edit_post(request, post_id):
+    """编辑帖子"""
+    post = get_object_or_404(Post, id=post_id, author=request.user)
+
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        content = request.POST.get('content', '').strip()
+        post_type = request.POST.get('post_type', 'recommend')
+
+        if not title or not content:
+            return JsonResponse({'success': False, 'error': '标题和内容不能为空'})
+
+        post.title = title
+        post.content = content
+        post.post_type = post_type
+        post.save()
+
+        return JsonResponse({'success': True, 'message': '更新成功'})
+
+    context = {
+        'post': post,
+    }
+    return render(request, 'posts/edit_post.html', context)
+
+
+@login_required
+def delete_post(request, post_id):
+    """删除帖子"""
+    post = get_object_or_404(Post, id=post_id, author=request.user)
+    post.delete()
+
+    return JsonResponse({
+        'success': True,
+        'message': '删除成功'
+    })
+
+
+@login_required
 def like_post(request, post_id):
     """点赞帖子"""
     post = get_object_or_404(Post, id=post_id)
@@ -268,7 +308,6 @@ def like_post(request, post_id):
 
 
 @login_required
-@require_POST
 def add_comment(request, post_id):
     """添加评论"""
     post = get_object_or_404(Post, id=post_id)
@@ -304,7 +343,6 @@ def add_comment(request, post_id):
 
 
 @login_required
-@require_POST
 def like_comment(request, comment_id):
     """点赞评论"""
     comment = get_object_or_404(Comment, id=comment_id)
@@ -332,46 +370,6 @@ def like_comment(request, comment_id):
 
 
 @login_required
-def edit_post(request, post_id):
-    """编辑帖子"""
-    post = get_object_or_404(Post, id=post_id, author=request.user)
-
-    if request.method == 'POST':
-        title = request.POST.get('title', '').strip()
-        content = request.POST.get('content', '').strip()
-        post_type = request.POST.get('post_type', 'recommend')
-
-        if not title or not content:
-            return JsonResponse({'success': False, 'error': '标题和内容不能为空'})
-
-        post.title = title
-        post.content = content
-        post.post_type = post_type
-        post.save()
-
-        return JsonResponse({'success': True, 'message': '更新成功'})
-
-    context = {
-        'post': post,
-    }
-    return render(request, 'posts/edit_post.html', context)
-
-
-@login_required
-@require_POST
-def delete_post(request, post_id):
-    """删除帖子"""
-    post = get_object_or_404(Post, id=post_id, author=request.user)
-    post.delete()
-
-    return JsonResponse({
-        'success': True,
-        'message': '删除成功'
-    })
-
-
-@login_required
-@require_POST
 def delete_comment(request, comment_id):
     """删除评论"""
     comment = get_object_or_404(Comment, id=comment_id)
