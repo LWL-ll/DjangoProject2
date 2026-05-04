@@ -474,11 +474,13 @@
     <main class="page">
       <section class="hero" aria-label="帖子主图">
         <div class="hero-media">
-          {% if images %}
-          <div class="carousel-container" id="carousel">
+          {% if images.exists %}
+          <div class="carousel" id="carousel">
             {% for image in images %}
             <div class="carousel-slide {% if forloop.first %}active{% endif %}">
-              <img src="{{ image.image.url }}" alt="{{ post.title }} - 图片{{ forloop.counter }}" />
+              <img src="{{ image.image.url }}"
+                   alt="{{ post.title }} - 图片{{ forloop.counter }}"
+                   onerror="this.onerror=null; this.src='{% static 'img/backgrounds/tower_bg.jpg' %}';" />
             </div>
             {% endfor %}
 
@@ -499,7 +501,9 @@
             {% endif %}
           </div>
           {% elif post.cover_image %}
-          <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" />
+          <img src="{{ post.cover_image.url }}"
+               alt="{{ post.title }}"
+               onerror="this.onerror=null; this.src='{% static 'img/backgrounds/tower_bg.jpg' %}';" />
           {% else %}
           <img src="{% static 'img/backgrounds/tower_bg.jpg' %}" alt="默认图片" />
           {% endif %}

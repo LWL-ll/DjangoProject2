@@ -398,15 +398,26 @@ def api_create_post(request):
         shop_addr = request.POST.get('shop_addr', '').strip()
         level_text = request.POST.get('level', '').strip()
         
-        if not title or not content or not category:
+        if not title or not content:
             return JsonResponse({'success': False, 'error': '请填写完整信息'})
+        
+        # 避雷帖不需要分类，只发布到避雷页面
+        if post_type == 'review':
+            category = 'avoid'  # 避雷帖使用特殊分类
+        elif not category:
+            return JsonResponse({'success': False, 'error': '请选择分类'})
         
         level_map = {
             '强烈推荐': 'highly-recommend',
             '非常好吃': 'recommend',
             '还不错': 'recommend',
             '性价比高': 'normal',
-            '环境好': 'normal'
+            '环境好': 'normal',
+            '超级踩雷': 'avoid',
+            '难吃': 'avoid',
+            '一般不推荐': 'avoid',
+            '价格太贵': 'avoid',
+            '卫生差': 'avoid'
         }
         level_value = level_map.get(level_text, '')
         
@@ -425,18 +436,25 @@ def api_create_post(request):
         for image in images:
             PostImage.objects.create(post=post, image=image)
         
-        category_urls = {
-            'fast-food': '/posts/fast-food/',
-            'chinese-food': '/posts/chinese-food/',
-            'light-food': '/posts/light-food/',
-            'dessert': '/posts/dessert/',
-            'snack': '/posts/snack/',
-            'milk-tea': '/posts/milk-tea/'
-        }
+        # 根据帖子类型决定重定向页面
+        if post_type == 'review':
+            # 避雷帖重定向到避雷页面
+            redirect_url = '/community/bilei/'
+        else:
+            # 推荐帖重定向到对应分类页
+            category_urls = {
+                'fast-food': '/posts/fast-food/',
+                'chinese-food': '/posts/chinese-food/',
+                'light-food': '/posts/light-food/',
+                'dessert': '/posts/dessert/',
+                'snack': '/posts/snack/',
+                'milk-tea': '/posts/milk-tea/'
+            }
+            redirect_url = category_urls.get(category, '/posts/')
         
         return JsonResponse({
             'success': True,
-            'redirect_url': category_urls.get(category, '/posts/'),
+            'redirect_url': redirect_url,
             'message': f'发布成功！共上传 {len(images)} 张图片'
         })
         

@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Post, Comment, UserLike
+from posts.models import Post, Comment, PostLike 
 
 logger = logging.getLogger(__name__)
 
@@ -13,15 +13,9 @@ logger = logging.getLogger(__name__)
 @login_required
 def bilei_page(request):
     """
-    显示避雷帖子页面（包含发帖表单和帖子列表）
-    
-    Args:
-        request: HTTP 请求对象
-    
-    Returns:
-        HttpResponse: 渲染后的避雷页面
+    显示避雷帖子页面（读取 posts 表中的数据）
     """
-    from posts.models import Post
+    # 注意：api_create_post 中避雷贴的 post_type 设置为 'review'
     posts = Post.objects.filter(post_type='review').order_by('-created_at')
     
     context = {
@@ -34,15 +28,9 @@ def bilei_page(request):
 @login_required
 def recommend_page(request):
     """
-    显示推荐帖子页面
-    
-    Args:
-        request: HTTP 请求对象
-    
-    Returns:
-        HttpResponse: 渲染后的推荐页面
+    显示推荐帖子页面（读取 posts 表中的数据）
     """
-    from posts.models import Post
+    # 推荐贴的 post_type 为 'recommend'
     posts = Post.objects.filter(post_type='recommend').order_by('-created_at')
     
     context = {
