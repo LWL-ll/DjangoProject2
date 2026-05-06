@@ -103,7 +103,6 @@
 
       .media {
         position: relative;
-        background: linear-gradient(135deg, #e8f4f8 0%, #d4e8f0 100%);
         aspect-ratio: 4 / 3;
         overflow: hidden;
       }
@@ -183,9 +182,11 @@
         <article class="menu-card" onclick="window.location.href='/posts/{{ post.id }}/'">
           <div class="media">
             {% if post.cover_image %}
-            <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" />
+            <img src="{{ post.cover_image.url }}" alt="{{ post.title }}"
+                 onerror="this.src='{% static 'img/backgrounds/tower_bg.jpg' %}'" />
             {% elif post.images.exists %}
-            <img src="{{ post.images.first.image.url }}" alt="{{ post.title }}" />
+            <img src="{{ post.images.first.image.url }}" alt="{{ post.title }}"
+                 onerror="this.src='{% static 'img/backgrounds/tower_bg.jpg' %}'" />
             {% else %}
             <img src="{% static 'img/backgrounds/tower_bg.jpg' %}" alt="默认图片" />
             {% endif %}
